@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import LoginDropDown from "./Login_DropDown";
 
 const navItems = [
   {
@@ -27,7 +28,7 @@ const navItems = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   return (
     <nav className="mb-5">
@@ -85,15 +86,7 @@ const Navbar = () => {
 
           <div>
             {user ? (
-              <div className="flex items-center gap-3">
-                <img
-                  src={user.img_url ?? "./images/user.webp"}
-                  alt={user.name}
-                  title={user.name}
-                  className="h-10 w-10 rounded-full cursor-pointer border"
-                  onClick={logout}
-                />
-              </div>
+              <LoginDropDown />
             ) : (
               <Link to="/login">
                 <Button className="bg-[#2563EB] hover:bg-[#1D4ED8] cursor-pointer">
