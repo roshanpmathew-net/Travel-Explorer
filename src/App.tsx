@@ -9,7 +9,19 @@ import Favorites from "./pages/Favorites";
 import Home from "./pages/Home";
 import Layout from "./layouts/Layout";
 
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import i18n from "./i18n";
+
 function App() {
+
+    const lang = useSelector((state: any)=>state.language.language);
+
+    useEffect(()=>{
+      i18n.changeLanguage(lang)
+    }, [lang])
+
+
   return (
     <>
       <>
@@ -18,7 +30,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/country/:id" element={<Country />} />
+            <Route path="/country/:name" element={<Country />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/compare" element={<Compare />} />
           </Route>
