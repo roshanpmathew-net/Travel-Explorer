@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "name": "Japan",
+    "capital": "Tokyo",
+    "population": 123294513,
+    "currency": "JPY",
+    "attractionName": "Mount Fuji",
+    "image": "https://images.unsplash.com/photo-1570459027562-4a916cc6113f"
+  },
+  {
+    "id": 2,
+    "name": "France",
+    "capital": "Paris",
+    "population": 68374000,
+    "currency": "EUR",
+    "attractionName": "Eiffel Tower",
+    "image": "https://images.unsplash.com/photo-1549144511-f099e773c147"
+  },
+  {
+    "id": 3,
+    "name": "Italy",
+    "capital": "Rome",
+    "population": 58900000,
+    "currency": "EUR",
+    "attractionName": "Colosseum",
+    "image": "https://images.unsplash.com/photo-1552832230-c0197dd311b5"
+  },
+  {
+    "id": 4,
+    "name": "India",
+    "capital": "New Delhi",
+    "population": 1438069596,
+    "currency": "INR",
+    "attractionName": "Taj Mahal",
+    "image": "https://images.unsplash.com/photo-1564507592333-c60657eea523"
+  },
+  {
+    "id": 5,
+    "name": "Australia",
+    "capital": "Canberra",
+    "population": 27000000,
+    "currency": "AUD",
+    "attractionName": "Sydney Opera House",
+    "image": "https://images.unsplash.com/photo-1523428096881-5bd79d043006"
+  },
+  {
+    "id": 6,
+    "name": "United States",
+    "capital": "Washington, D.C.",
+    "population": 340110988,
+    "currency": "USD",
+    "attractionName": "Statue of Liberty",
+    "image": "https://images.unsplash.com/photo-1568515387631-8b650bbcdb90"
+  },
+  {
+    "id": 7,
+    "name": "Canada",
+    "capital": "Ottawa",
+    "population": 41528800,
+    "currency": "CAD",
+    "attractionName": "Niagara Falls",
+    "image": "https://images.unsplash.com/photo-1503614472-8c93d56e92ce"
+  },
+  {
+    "id": 8,
+    "name": "Brazil",
+    "capital": "Brasília",
+    "population": 212600000,
+    "currency": "BRL",
+    "attractionName": "Christ the Redeemer",
+    "image": "https://images.unsplash.com/photo-1483729558449-99ef09a8c325"
+  },
+  {
+    "id": 9,
+    "name": "Switzerland",
+    "capital": "Bern",
+    "population": 9030000,
+    "currency": "CHF",
+    "attractionName": "Matterhorn",
+    "image": "https://images.unsplash.com/photo-1527668752968-14dc70a27c95"
+  },
+  {
+    "id": 10,
+    "name": "Thailand",
+    "capital": "Bangkok",
+    "population": 66090000,
+    "currency": "THB",
+    "attractionName": "Grand Palace",
+    "image": "https://images.unsplash.com/photo-1508009603885-50cf7c579365"
+  },
+  {
+    "id": 11,
+    "name": "United Kingdom",
+    "capital": "London",
+    "population": 69138192,
+    "currency": "GBP",
+    "attractionName": "Big Ben",
+    "image": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad"
+  },
+  {
+    "id": 12,
+    "name": "Egypt",
+    "capital": "Cairo",
+    "population": 114500000,
+    "currency": "EGP",
+    "attractionName": "Great Pyramid of Giza",
+    "image": "https://images.unsplash.com/photo-1572252009286-268acec5ca0a"
+  }
+]

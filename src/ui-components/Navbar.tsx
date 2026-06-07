@@ -6,27 +6,31 @@ import { useAuth } from "../context/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import LoginDropDown from "./Login_DropDown";
+import LangDropDown from "./Lang_Dropdown";
+import { useTranslation } from "react-i18next";
 
 const navItems = [
   {
     id: 1,
-    name: "Explore",
+    name: "explore",
     link: "/explore",
   },
   {
     id: 2,
-    name: "Favorites",
+    name: "favorites",
     link: "/favorites",
   },
   {
     id: 3,
-    name: "Compare",
+    name: "compare",
     link: "/compare",
   },
 ];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+    const { t } = useTranslation();
+  
 
   const { user } = useAuth();
 
@@ -59,8 +63,11 @@ const Navbar = () => {
                       isActive ? "after:w-full" : "after:w-0 hover:after:w-full"
                     }`
                   }
-                >
-                  {item.name}
+                >    {
+                      t(`${item.name}`)
+                    }
+                  
+                  
                 </NavLink>
               </li>
             ))}
@@ -72,7 +79,7 @@ const Navbar = () => {
             <Search size={15} className="  text-gray-400" />
 
             <Input
-              placeholder="Search destinations..."
+              placeholder={t("search_destinations")}
               className="w-72 rounded-full border-0 shadow-none focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none"
             />
           </div>
@@ -84,13 +91,15 @@ const Navbar = () => {
             <Moon size={20} />
           </button>
 
+          <LangDropDown/>
+
           <div>
             {user ? (
               <LoginDropDown />
             ) : (
               <Link to="/login">
                 <Button className="bg-[#2563EB] hover:bg-[#1D4ED8] cursor-pointer">
-                  Login
+                  {t("login")}
                 </Button>
               </Link>
             )}
@@ -104,6 +113,8 @@ const Navbar = () => {
           >
             <Moon size={20} />
           </button>
+
+          <LangDropDown/>
 
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -147,7 +158,7 @@ const Navbar = () => {
 
           <Link to="/login" onClick={() => setIsOpen(false)}>
             <Button className="mt-4 w-full bg-[#2563EB] hover:bg-[#1D4ED8]">
-              Login
+              {t("login")}
             </Button>
           </Link>
         </div>

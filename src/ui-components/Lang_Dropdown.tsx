@@ -1,0 +1,81 @@
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import {  Check } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { setLanguage } from "../redux/LangSlice";
+
+const LangDropDown = () => {
+  const dispatch = useDispatch();
+
+  const currentLanguage = useSelector(
+    (state: any) => state.language.language
+  );
+
+  const changeLanguage = (lang: string) => {
+    dispatch(setLanguage(lang));
+    localStorage.setItem("language", lang);
+  };
+
+  const languages = [
+    {
+      code: "en",
+      label: "English",
+    },
+    {
+      code: "hi",
+      label: "हिन्दी",
+    },
+  ];
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <button
+          className="
+            flex items-center gap-2
+            px-3 py-2
+            rounded-lg
+            border border-gray-200
+            bg-white
+            hover:bg-gray-50
+            transition-colors
+            text-sm font-medium
+            cursor-pointer
+          "
+        >
+          
+          <span>{currentLanguage.toUpperCase()}</span>
+        </button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent
+        align="end"
+        className="w-40"
+      >
+        <DropdownMenuGroup>
+          {languages.map((language) => (
+            <DropdownMenuItem
+              key={language.code}
+              onClick={() => changeLanguage(language.code)}
+              className="cursor-pointer flex items-center justify-between"
+            >
+              <span>{language.label}</span>
+
+              {currentLanguage === language.code && (
+                <Check size={16} />
+              )}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export default LangDropDown;
