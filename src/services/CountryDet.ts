@@ -19,6 +19,15 @@ export interface CountryDetails {
   openStreetMaps: string;
 }
 
+export interface Country {
+  name: string;
+  capital: string;
+  population: number;
+  continent: string;
+  languages: string;
+  flag: string;
+}
+
 export const getCountryDetails = async (
   name: string
 ): Promise<CountryDetails> => {
@@ -62,6 +71,37 @@ export const getCountryDetails = async (
     };
   } catch (error) {
     console.error("Error fetching country details:", error);
+    throw error;
+  }
+};
+
+
+export const getAllCountries = async (): Promise<Country[]> => {
+  try {
+    const res = await fetch(
+      "https://restcountries.com/v3.1/all?fields=name,flags,capital,population,continents,languages"
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch country details");
+    }
+
+    const data = await res.json();
+
+    const countryData: Country[] = data.map((item: any) => ({
+      name: item.name.official,
+      capital: item.capital?.[0] ?? "N/A",
+      population: item.population,
+      continent: item.continents?.[0] ?? "N/A",
+      languages: item.languages
+        ? Object.values(item.languages).join(", ")
+        : "N/A",
+      flag: item.flags?.png,
+    }));
+
+    return countryData;
+  } catch (error) {
+    console.error("Error fetching country data:", error);
     throw error;
   }
 };

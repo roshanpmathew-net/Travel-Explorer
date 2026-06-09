@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,11 +42,11 @@ const LangDropDown = () => {
             flex items-center gap-2
             px-3 py-2
             rounded-lg
-            border border-gray-200
-            bg-white
-            hover:bg-gray-50
+            border border-gray-200 dark:border-slate-800
+            bg-white dark:bg-slate-900
+            hover:bg-gray-50 dark:hover:bg-slate-800
             transition-colors
-            text-sm font-medium
+            text-sm font-medium text-slate-800 dark:text-slate-200
             cursor-pointer
           "
         >

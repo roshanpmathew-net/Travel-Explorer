@@ -57,7 +57,6 @@ const Country = () => {
 
         <div className="relative z-10 h-full flex items-end">
           <div className="w-full flex flex-col lg:flex-row lg:justify-between lg:items-end gap-8 px-4 sm:px-8 lg:px-20 pb-8 lg:pb-12 text-white">
-            
             <div>
               <div className="flex items-center gap-3 sm:gap-5 mb-4">
                 <img
@@ -80,7 +79,6 @@ const Country = () => {
               </p>
             </div>
 
-            
             <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
               <Button
                 className="bg-blue-600 flex items-center justify-center p-4 px-6 lg:px-8 rounded-lg gap-3 cursor-pointer w-full sm:w-auto"
@@ -99,8 +97,8 @@ const Country = () => {
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto"
               >
-                <Button className="bg-white text-black flex items-center justify-center p-4 px-4 rounded-lg gap-3 cursor-pointer w-full sm:w-auto">
-                  <Map className="text-black" />
+                <Button className="bg-white dark:bg-slate-900 text-black dark:text-white border border-transparent dark:border-slate-800 flex items-center justify-center p-4 px-4 rounded-lg gap-3 cursor-pointer w-full sm:w-auto">
+                  <Map className="text-black dark:text-white" />
                   View on Google Maps
                 </Button>
               </a>
@@ -131,7 +129,7 @@ const Country = () => {
               href={countryData?.openStreetMaps}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center mt-6 px-5 py-3 bg-white text-[#2563EB] font-semibold rounded-xl hover:bg-blue-50 transition-all duration-300"
+              className="inline-flex items-center mt-6 px-5 py-3 bg-white dark:bg-slate-900 text-[#2563EB] dark:text-blue-400 border border-transparent dark:border-slate-800 font-semibold rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 transition-all duration-300"
             >
               Open Street Map
             </a>
@@ -147,36 +145,36 @@ const Country = () => {
         </div>
       </div>
 
-      <div className="mt-3 w-full bg-blue-100/80 p-6 sm:p-8 lg:p-11 rounded-3xl">
-  <div className="flex flex-col gap-6">
-    <div className="flex flex-col gap-2">
-      <h1 className="text-2xl sm:text-3xl font-semibold">
-        Visual Exploration
-      </h1>
+      <div className="mt-3 w-full bg-blue-100/80 dark:bg-slate-900/50 p-6 sm:p-8 lg:p-11 rounded-3xl border border-transparent dark:border-slate-850">
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-2xl sm:text-3xl font-semibold">
+              Visual Exploration
+            </h1>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-gray-600">
-          Curated moments from across the archipelago.
-        </p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-gray-600 dark:text-slate-400">
+                Curated moments from across the archipelago.
+              </p>
 
-        <button
-          className="
+              <button
+                className="
             flex items-center gap-2
-            text-blue-600 font-medium
+            text-blue-600 dark:text-blue-400 font-medium
             cursor-pointer
             transition-all duration-300
             hover:gap-3
           "
-        >
-          View All
-          <CircleArrowRight size={20} />
-        </button>
-      </div>
-    </div>
+              >
+                View All
+                <CircleArrowRight size={20} />
+              </button>
+            </div>
+          </div>
 
-    <ImageGallery name={name} />
-  </div>
-</div>
+          <ImageGallery name={name} />
+        </div>
+      </div>
     </div>
   );
 };

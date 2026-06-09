@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import { AuthProvider } from './context/AuthContext.tsx';
+import { ThemeProvider } from './context/ThemeContext.tsx';
 import { store } from './redux/store.ts';
 import { Provider } from 'react-redux';
 
@@ -16,15 +17,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
   <StrictMode>
     <Provider store={store}>
-    <GoogleOAuthProvider clientId={CLIENT_ID}>
-      <AuthProvider>
-
-        <BrowserRouter>
-        <App />
-      </BrowserRouter>
-      </AuthProvider>
-      
-    </GoogleOAuthProvider>
+      <ThemeProvider>
+        <GoogleOAuthProvider clientId={CLIENT_ID}>
+          <AuthProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </AuthProvider>
+        </GoogleOAuthProvider>
+      </ThemeProvider>
     </Provider>
   </StrictMode>,
 )

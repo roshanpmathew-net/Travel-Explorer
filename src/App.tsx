@@ -8,8 +8,10 @@ import Compare from "./pages/Compare";
 import Favorites from "./pages/Favorites";
 import Home from "./pages/Home";
 import Layout from "./layouts/Layout";
-
+import Plans from "./pages/Plans";
+import AdminPage from "./pages/AdminPage";
 import { useSelector } from "react-redux";
+
 import { useEffect } from "react";
 import i18n from "./i18n";
 
@@ -33,8 +35,10 @@ function App() {
             <Route path="/country/:name" element={<Country />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/compare" element={<Compare />} />
+            <Route path="/plans" element={<Plans />} />
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/admin" element={<AdminPage/>}/>
         </Routes>
       </>
     </>
