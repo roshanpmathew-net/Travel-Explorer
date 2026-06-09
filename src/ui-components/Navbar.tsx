@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
-import { Moon, Menu, X, Search } from "lucide-react";
+import { Moon, Sun, Menu, X, Search } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,17 +26,21 @@ const navItems = [
     name: "compare",
     link: "/compare",
   },
+  {
+    id: 4,
+    name: "plans",
+    link: "/plans"
+  }
 ];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-    const { t } = useTranslation();
-  
-
+  const { t } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
 
   return (
-    <nav className="mb-5">
+    <nav className="mb-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 transition-colors">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex gap-10">
           <Link
@@ -44,7 +49,7 @@ const Navbar = () => {
           >
             Voyage
           </Link>
-          <ul className=" items-center gap-6 hidden md:flex">
+          <ul className=" items-center gap-7 hidden md:flex">
             {navItems.map((item) => (
               <li key={item.id}>
                 <NavLink
@@ -54,7 +59,7 @@ const Navbar = () => {
                     ${
                       isActive
                         ? "text-[#2563EB]"
-                        : "text-gray-600 hover:text-[#2563EB]"
+                        : "text-gray-600 dark:text-gray-300 hover:text-[#2563EB]"
                     }
                     after:absolute after:left-0 after:bottom-0
                     after:h-0.5 after:bg-[#2563EB]
@@ -75,20 +80,21 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-8">
-          <div className="flex justify-center items-center gap-1 border-gray-400/50 border-2 rounded-4xl  pl-2 bg-blue-200/30">
-            <Search size={15} className="  text-gray-400" />
+          <div className="flex justify-center items-center gap-1 border-gray-400/50 dark:border-slate-800 border-2 rounded-4xl pl-2 bg-blue-200/30 dark:bg-slate-900/40">
+            <Search size={15} className="text-gray-400" />
 
             <Input
               placeholder={t("search_destinations")}
-              className="w-72 rounded-full border-0 shadow-none focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none"
+              className="w-72 rounded-full border-0 shadow-none focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none bg-transparent"
             />
           </div>
 
           <button
             type="button"
-            className="rounded-full p-2 transition-colors cursor-pointer hover:bg-blue-200"
+            onClick={toggleTheme}
+            className="rounded-full p-2 transition-colors cursor-pointer hover:bg-blue-200 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-200"
           >
-            <Moon size={20} />
+            {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 
           <LangDropDown/>
@@ -98,7 +104,7 @@ const Navbar = () => {
               <LoginDropDown />
             ) : (
               <Link to="/login">
-                <Button className="bg-[#2563EB] hover:bg-[#1D4ED8] cursor-pointer">
+                <Button className="bg-[#2563EB] hover:bg-[#1D4ED8] cursor-pointer text-white">
                   {t("login")}
                 </Button>
               </Link>
@@ -109,16 +115,17 @@ const Navbar = () => {
         <div className="flex items-center gap-2 md:hidden">
           <button
             type="button"
-            className="rounded-full p-2 transition-colors cursor-pointer hover:bg-blue-200"
+            onClick={toggleTheme}
+            className="rounded-full p-2 transition-colors cursor-pointer hover:bg-blue-200 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-200"
           >
-            <Moon size={20} />
+            {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 
           <LangDropDown/>
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="rounded-md p-2 transition-colors cursor-pointer hover:bg-blue-200"
+            className="rounded-md p-2 transition-colors cursor-pointer hover:bg-blue-200 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-200"
           >
             {isOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
@@ -126,14 +133,14 @@ const Navbar = () => {
       </div>
 
       <div
-        className={`overflow-hidden transition-all duration-300 md:hidden ${
+        className={`overflow-hidden transition-all duration-300 md:hidden bg-white dark:bg-slate-950 ${
           isOpen ? "max-h-96 pb-4" : "max-h-0"
         }`}
       >
         <div className="px-6">
           <Input
             placeholder="Search destinations..."
-            className="mb-4 rounded-full border-gray-300"
+            className="mb-4 rounded-full border-gray-300 dark:border-slate-800 dark:bg-slate-900"
           />
 
           <ul className="flex flex-col gap-4">
@@ -146,7 +153,7 @@ const Navbar = () => {
                     `block font-medium transition-colors ${
                       isActive
                         ? "text-[#2563EB]"
-                        : "text-gray-600 hover:text-[#2563EB]"
+                        : "text-gray-600 dark:text-gray-300 hover:text-[#2563EB]"
                     }`
                   }
                 >
@@ -157,7 +164,7 @@ const Navbar = () => {
           </ul>
 
           <Link to="/login" onClick={() => setIsOpen(false)}>
-            <Button className="mt-4 w-full bg-[#2563EB] hover:bg-[#1D4ED8]">
+            <Button className="mt-4 w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white">
               {t("login")}
             </Button>
           </Link>

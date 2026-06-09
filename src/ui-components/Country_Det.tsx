@@ -19,7 +19,12 @@ const CountryDet = ({ item }: CountryProps) => {
     {
       label: "Population",
       icon: <Users />,
-      value: `${(item.population / 1000000).toFixed(1)}M`,
+      value:
+        item.population >= 1_000_000
+          ? `${(item.population / 1_000_000).toFixed(1)}M`
+          : item.population >= 1_000
+            ? `${(item.population / 1_000).toFixed(0)}K`
+            : item.population.toString(),
     },
     {
       label: "Total Area",
@@ -37,15 +42,14 @@ const CountryDet = ({ item }: CountryProps) => {
     },
   ];
   return (
-  <div className="mt-10 px-4 sm:px-6 lg:px-8">
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-      {data.map((card, index) => (
-        <DetailCard key={index} details={card} />
-      ))}
+    <div className="mt-10 px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        {data.map((card, index) => (
+          <DetailCard key={index} details={card} />
+        ))}
+      </div>
     </div>
-    
-  </div>
-);
+  );
 };
 
 export default CountryDet;

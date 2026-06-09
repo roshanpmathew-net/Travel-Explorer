@@ -64,7 +64,7 @@ export const getImages = async (
     const imageData: CountryImage[] = data.photos
       .slice(1)
       .map((image: any) => ({
-        src: image.src.original,
+        src: image.src.medium,
         alt: image.alt,
       }));
 

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +27,15 @@ const { user, logout } = useAuth();
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuGroup>
+
+            {
+              user?.isAdmin && (
+                <DropdownMenuItem>
+                <a href="/admin">Admin Panel</a>
+               </DropdownMenuItem>
+              )
+            }
+            
             <DropdownMenuItem>
                 <a href="/profile">Profile</a>
             </DropdownMenuItem>

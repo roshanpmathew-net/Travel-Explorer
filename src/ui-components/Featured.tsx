@@ -79,9 +79,9 @@ const Featured = () => {
   return (
     <div className="w-full pt-10 ">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900">{t("featured_countries")}</h1>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-slate-50">{t("featured_countries")}</h1>
 
-        <p className="mt-2 max-w-xl text-gray-600 leading-relaxed">
+        <p className="mt-2 max-w-xl text-gray-600 dark:text-slate-400 leading-relaxed">
           {
             t("featured_countries_description")
           }
@@ -93,8 +93,8 @@ const Featured = () => {
       >
         <div className="w-2/3 h-100 rounded-xl relative overflow-hidden group cursor-pointer" onClick={() => navigate(`/country/${mainCountry?.name.toLowerCase()}`)}>
           {!imagesLoaded ? (
-            <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-gray-200 animate-pulse">
-              <ImageIcon className="w-12 h-12 text-gray-400" />
+            <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-gray-200 dark:bg-slate-800 animate-pulse">
+              <ImageIcon className="w-12 h-12 text-gray-400 dark:text-gray-500" />
             </div>
           ) : (
             <div
@@ -138,8 +138,8 @@ const Featured = () => {
               }}
             >
               {!imagesLoaded ? (
-                <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-gray-200 animate-pulse">
-                  <ImageIcon className="w-12 h-12 text-gray-400" />
+                <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-gray-200 dark:bg-slate-800 animate-pulse">
+                  <ImageIcon className="w-12 h-12 text-gray-400 dark:text-gray-500" />
                 </div>
               ) : (
                 <div

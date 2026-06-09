@@ -9,6 +9,7 @@ export interface User {
   name: string;
   img_url: string | null;
   islogged: boolean;
+  isAdmin: boolean
 }
 
 interface AuthContextType {
