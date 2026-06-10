@@ -45,7 +45,6 @@ useEffect(() => {
         lg:h-[450px]
       "
     >
-      {/* Large Left Image */}
       <div
         className="
           overflow-hidden rounded-2xl group cursor-pointer
@@ -60,7 +59,6 @@ useEffect(() => {
         />
       </div>
 
-      {/* Top Middle */}
       <div
         className="
           overflow-hidden rounded-2xl group cursor-pointer
@@ -75,7 +73,6 @@ useEffect(() => {
         />
       </div>
 
-      {/* Right Tall */}
       <div
         className="
           overflow-hidden rounded-2xl group cursor-pointer
@@ -90,7 +87,6 @@ useEffect(() => {
         />
       </div>
 
-      {/* Bottom Middle */}
       <div
         className="
           overflow-hidden rounded-2xl group cursor-pointer

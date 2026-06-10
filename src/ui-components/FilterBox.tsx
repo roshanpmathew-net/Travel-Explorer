@@ -43,7 +43,7 @@ const FilterBox = ({
   const clearAll = () => {
     setRegion("");
     setLangs([]);
-    setValue([1000]); // or whatever your initial slider value is
+    setValue([1000]); 
     setSortBy("");
   };
   return (
