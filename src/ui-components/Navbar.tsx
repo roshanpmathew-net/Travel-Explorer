@@ -29,8 +29,8 @@ const navItems = [
   {
     id: 4,
     name: "plans",
-    link: "/plans"
-  }
+    link: "/plans",
+  },
 ];
 
 const Navbar = () => {
@@ -68,11 +68,9 @@ const Navbar = () => {
                       isActive ? "after:w-full" : "after:w-0 hover:after:w-full"
                     }`
                   }
-                >    {
-                      t(`${item.name}`)
-                    }
-                  
-                  
+                >
+                  {" "}
+                  {t(`${item.name}`)}
                 </NavLink>
               </li>
             ))}
@@ -80,14 +78,14 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-8">
-          <div className="flex justify-center items-center gap-1 border-gray-400/50 dark:border-slate-800 border-2 rounded-4xl pl-2 bg-blue-200/30 dark:bg-slate-900/40">
+          {/* <div className="flex justify-center items-center gap-1 border-gray-400/50 dark:border-slate-800 border-2 rounded-4xl pl-2 bg-blue-200/30 dark:bg-slate-900/40">
             <Search size={15} className="text-gray-400" />
 
             <Input
               placeholder={t("search_destinations")}
               className="w-72 rounded-full border-0 shadow-none focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none bg-transparent"
             />
-          </div>
+          </div> */}
 
           <button
             type="button"
@@ -97,7 +95,7 @@ const Navbar = () => {
             {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 
-          <LangDropDown/>
+          <LangDropDown />
 
           <div>
             {user ? (
@@ -121,7 +119,7 @@ const Navbar = () => {
             {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 
-          <LangDropDown/>
+          <LangDropDown />
 
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -138,10 +136,10 @@ const Navbar = () => {
         }`}
       >
         <div className="px-6">
-          <Input
+          {/* <Input
             placeholder="Search destinations..."
             className="mb-4 rounded-full border-gray-300 dark:border-slate-800 dark:bg-slate-900"
-          />
+          /> */}
 
           <ul className="flex flex-col gap-4">
             {navItems.map((item) => (
@@ -157,7 +155,7 @@ const Navbar = () => {
                     }`
                   }
                 >
-                  {item.name}
+                  {t(`${item.name}`)}
                 </NavLink>
               </li>
             ))}

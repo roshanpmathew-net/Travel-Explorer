@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getCountryDetails, type CountryDetails } from "@/services/CountryDet";
+import { addToFavourites, isLiked, removeFromFavourites } from "@/services/Favourites";
 
 import { getCountryImage, type CountryImage } from "@/services/Image";
 import Loader from "@/ui-components/Loader";
@@ -8,13 +9,15 @@ import { Button } from "@base-ui/react/button";
 import { CircleArrowRight, Heart, Map } from "lucide-react";
 import CountryDet from "@/ui-components/Country_Det";
 import ImageGallery from "@/ui-components/Image_Gallery";
+import GalleryFull from "@/ui-components/GalleryFull";
 
 const Country = () => {
   const { name } = useParams();
   const [countryData, setCountryData] = useState<CountryDetails | null>(null);
   const [countryImage, setImage] = useState<CountryImage | null>(null);
   const [loading, setLoading] = useState(true);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isLiked(name!));
+  const [isOpen, setOpen] = useState(false);
 
   useEffect(() => {
     const getCountryData = async () => {
@@ -43,6 +46,16 @@ const Country = () => {
     getCountryData();
     fetchCountryImage();
   }, [name]);
+
+  const handleLike = () => {
+  if (liked) {
+    removeFromFavourites(name!);
+    setLiked(false);
+  } else {
+    addToFavourites(name!);
+    setLiked(true);
+  }}
+
 
   return loading ? (
     <Loader />
@@ -85,6 +98,7 @@ const Country = () => {
                 onClick={() => setLiked(!liked)}
               >
                 <Heart
+                  onClick={()=>handleLike()}
                   className={liked ? "fill-white text-white" : "text-white"}
                   size={24}
                 />
@@ -158,18 +172,29 @@ const Country = () => {
               </p>
 
               <button
+                onClick={() => setOpen(true)}
                 className="
-            flex items-center gap-2
-            text-blue-600 dark:text-blue-400 font-medium
-            cursor-pointer
-            transition-all duration-300
-            hover:gap-3
-          "
+                  flex items-center gap-2
+                  text-blue-600 dark:text-blue-400 font-medium
+                  cursor-pointer
+                  transition-all duration-300
+                  hover:gap-3
+                "
               >
                 View All
                 <CircleArrowRight size={20} />
               </button>
             </div>
+          </div>
+
+          <div
+            className={`fixed inset-0 z-50 ${
+              isOpen ? "flex" : "hidden"
+            } items-center justify-center p-4`}
+          >
+            <div className="absolute inset-0 bg-black/40" onDoubleClick={()=>setOpen(false)} />
+
+            <GalleryFull name={name} setOpen={setOpen} />
           </div>
 
           <ImageGallery name={name} />

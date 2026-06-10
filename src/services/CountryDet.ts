@@ -1,3 +1,6 @@
+import { toast } from "react-toastify";
+
+
 export interface CountryDetails {
   name: string;
   officialName: string;
@@ -70,6 +73,7 @@ export const getCountryDetails = async (
       openStreetMaps: country.maps?.openStreetMaps ?? "",
     };
   } catch (error) {
+    toast.error("Error Getting Details")
     console.error("Error fetching country details:", error);
     throw error;
   }
@@ -89,7 +93,7 @@ export const getAllCountries = async (): Promise<Country[]> => {
     const data = await res.json();
 
     const countryData: Country[] = data.map((item: any) => ({
-      name: item.name.official,
+      name: item.name.common,
       capital: item.capital?.[0] ?? "N/A",
       population: item.population,
       continent: item.continents?.[0] ?? "N/A",
@@ -101,6 +105,7 @@ export const getAllCountries = async (): Promise<Country[]> => {
 
     return countryData;
   } catch (error) {
+    toast.error("Error Getting Details")
     console.error("Error fetching country data:", error);
     throw error;
   }

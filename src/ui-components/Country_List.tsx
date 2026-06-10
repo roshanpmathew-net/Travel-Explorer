@@ -1,15 +1,22 @@
 import { Heart } from "lucide-react";
 import { type Country } from "@/services/CountryDet";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { addToFavourites, isLiked, removeFromFavourites } from "@/services/Favourites";
+
 
 interface CountryCardProps {
   item: Country;
+  onRemove?: (countryName: string) => void;
 }
 
-const CountryList = ({ item }: CountryCardProps) => {
+const CountryList = ({ item, onRemove  }: CountryCardProps) => {
   const nav = useNavigate();
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isLiked(item.name));
+
+  useEffect(() => {
+    setLiked(isLiked(item.name));
+  }, [item.name]);
 
   const formatPopulation = (population: number) => {
     if (population >= 1_000_000) {
@@ -22,12 +29,20 @@ const CountryList = ({ item }: CountryCardProps) => {
 
     return population.toString();
   };
+  const handleLike = () => {
+  if (liked) {
+    removeFromFavourites(item.name);
+    setLiked(false);
 
+    onRemove?.(item.name);
+  } else {
+    addToFavourites(item.name);
+    setLiked(true);
+  }
+};
   return (
     <div
-      onClick={() =>
-        nav(`/country/${encodeURIComponent(item.name)}`)
-      }
+     
       className="grid grid-cols-[120px_2fr_140px_140px_300px_60px] items-center gap-6 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-5 cursor-pointer hover:shadow-md transition"
     >
       <img
@@ -37,7 +52,9 @@ const CountryList = ({ item }: CountryCardProps) => {
       />
 
       <div>
-        <h2 className="font-semibold text-2xl text-slate-800 dark:text-slate-100">
+        <h2  onClick={() =>
+        nav(`/country/${encodeURIComponent(item.name)}`)
+      } className="font-semibold text-2xl text-slate-800 dark:text-slate-100">
           {item.name}
         </h2>
         <p className="text-gray-500 dark:text-slate-400">
@@ -70,14 +87,12 @@ const CountryList = ({ item }: CountryCardProps) => {
       </div>
 
       <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setLiked(!liked);
-        }}
-        className="flex justify-center"
+       onClick={()=>handleLike()}
+        className="flex justify-center cursor-pointer"
       >
         <Heart
-          className={`w-6 h-6 transition cursor-pointer ${
+          
+          className={`w-6 h-6 transition  ${
             liked
               ? "fill-red-500 text-red-500"
               : "text-slate-700 dark:text-slate-400"

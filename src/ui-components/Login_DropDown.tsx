@@ -6,9 +6,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 
 const LoginDropDown = () => {
 const { user, logout } = useAuth();
+const navigate = useNavigate();
+
+const handleLogout = () => {
+  logout();
+  navigate("/");
+};
   return (
     <div>
       <DropdownMenu>
@@ -39,7 +47,7 @@ const { user, logout } = useAuth();
             <DropdownMenuItem>
                 <a href="/profile">Profile</a>
             </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" className={'cursor-pointer'} onClick={logout}>
+            <DropdownMenuItem variant="destructive" className={'cursor-pointer'} onClick={handleLogout}>
                 Logout
             </DropdownMenuItem>
           </DropdownMenuGroup>

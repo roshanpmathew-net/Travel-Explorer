@@ -42,24 +42,23 @@ const Explore = () => {
   }, [countries, region, selectedLangs, value]);
 
   const sortedCountries = [...filteredCountries].sort((a, b) => {
-  switch (sortBy) {
-    case "name-asc":
-      return a.name.localeCompare(b.name);
+    switch (sortBy) {
+      case "name-asc":
+        return a.name.localeCompare(b.name);
 
-    case "name-desc":
-      return b.name.localeCompare(a.name);
+      case "name-desc":
+        return b.name.localeCompare(a.name);
 
-    case "population-asc":
-      return a.population - b.population;
+      case "population-asc":
+        return a.population - b.population;
 
-    case "population-desc":
-      return b.population - a.population;
+      case "population-desc":
+        return b.population - a.population;
 
-    
-    default:
-      return 0;
-  }
-});
+      default:
+        return 0;
+    }
+  });
 
   const currentCountries = sortedCountries.slice(firstInd, lastInd);
 
@@ -85,20 +84,18 @@ const Explore = () => {
     fetchCountries();
   }, []);
 
-  
-
   return (
     <div className="flex flex-row gap-2 mt-14 px-11">
       <FilterBox
-  region={region}
-  setRegion={setRegion}
-  selectedLangs={selectedLangs}
-  setLangs={setLangs}
-  value={value}
-  setValue={setValue}
-  sortBy={sortBy}
-  setSortBy={setSortBy}
-/>
+        region={region}
+        setRegion={setRegion}
+        selectedLangs={selectedLangs}
+        setLangs={setLangs}
+        value={value}
+        setValue={setValue}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
 
       {loading ? (
         <div className="flex w-full items-center justify-center">
@@ -110,13 +107,24 @@ const Explore = () => {
             <p className="text-2xl font-bold">Explore {length} Countries</p>
             <div className="flex flex-row gap-3 text-center">
               <button
-                className={`cursor-pointer hover:bg-gray-200 p-2 rounded-2xl ${view == "grid" && "bg-blue-200 text-blue-800"}`}
+                className={`cursor-pointer p-2 rounded-2xl transition-colors
+    ${
+      view === "grid"
+        ? "bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+        : "text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-800"
+    }`}
                 onClick={() => setView("grid")}
               >
                 <Grid2x2 />
               </button>
+
               <button
-                className={`cursor-pointer hover:bg-gray-200 p-2 rounded-2xl ${view == "list" && "bg-blue-200 text-blue-800"}`}
+                className={`cursor-pointer p-2 rounded-2xl transition-colors
+    ${
+      view === "list"
+        ? "bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+        : "text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-800"
+    }`}
                 onClick={() => setView("list")}
               >
                 <List />
