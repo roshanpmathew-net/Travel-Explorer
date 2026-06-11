@@ -1,6 +1,5 @@
 import { toast } from "react-toastify";
 
-
 export interface CountryDetails {
   name: string;
   officialName: string;
@@ -15,6 +14,7 @@ export interface CountryDetails {
 
   currency: string;
   languages: string;
+  code: string;
 
   timezone: string[];
 
@@ -29,83 +29,119 @@ export interface Country {
   continent: string;
   languages: string;
   flag: string;
+  code: string;
 }
 
+const APIKEY = import.meta.env.VITE_COUNTRY_API_KEY;
+
+export const mapRawToCountryDetails = (country: any): CountryDetails => {
+  return {
+    name: country.names?.common ?? "N/A",
+    officialName: country.names?.official ?? "N/A",
+    flag: country.flag?.url_png || country.flag?.url_svg || "",
+    flagAlt: country.flag?.description ?? "",
+    capital: country.capitals?.[0]?.name ?? "N/A",
+    code: country.codes?.alpha_3 ?? "N/A",
+    continent: country.continents?.join(", ") ?? "N/A",
+    population: country.population ?? 0,
+    area: country.area?.kilometers ?? 0,
+    currency:
+      country.currencies
+        ?.map((c: any) => `${c.name} (${c.symbol})`)
+        .join(", ") ?? "N/A",
+    languages:
+      country.languages?.map((lang: any) => lang.name).join(", ") ?? "N/A",
+    timezone: country.timezones ?? [],
+    googleMaps: country.links?.google_maps ?? "",
+    openStreetMaps: country.links?.open_street_maps ?? "",
+  };
+};
+
 export const getCountryDetails = async (
-  name: string
+  code?: string,
 ): Promise<CountryDetails> => {
   try {
+    // console.log(
+    //   `https://api.restcountries.com/countries/v5/codes.alpha_3/${code}`,
+    // );
     const res = await fetch(
-      `https://restcountries.com/v3.1/name/${name}?fullText=true`
+      `https://api.restcountries.com/countries/v5/codes.alpha_3/${code}`,
+      { headers: { Authorization: `Bearer ${APIKEY}` } },
     );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch country details");
+      // const error = await res.text();
+
+      // const backupRes = await fetch(
+      //   `https://api.restcountries.com/countries/v5?q=${name}&limit=1`,
+      //   { headers: { Authorization: `Bearer ${APIKEY}` } },
+      // );
+
+      const error = await res.text();
+
+      console.log("STATUS:", res.status);
+      console.log("ERROR:", error);
+
+      throw new Error(error);
     }
+    const data = await res.json();
+    const country = data.data.objects[0];
 
-    const [country] = await res.json();
-
-    return {
-      name: country.name.common,
-      officialName: country.name.official,
-
-      flag: country.flags?.png,
-      flagAlt: country.flags?.alt ?? "",
-
-      capital: country.capital?.[0] ?? "N/A",
-
-      continent: country.continents?.join(", ") ?? "N/A",
-
-      population: country.population,
-      area: country.area,
-
-      currency:
-        Object.values(country.currencies || {})
-          .map((c: any) => `${c.name} (${c.symbol})`)
-          .join(", ") || "N/A",
-
-      languages:
-        Object.values(country.languages || {}).join(", ") || "N/A",
-
-      timezone: country.timezones ?? "N/A",
-
-      googleMaps: country.maps?.googleMaps ?? "",
-      openStreetMaps: country.maps?.openStreetMaps ?? "",
-    };
+    return mapRawToCountryDetails(country);
   } catch (error) {
-    toast.error("Error Getting Details")
+    toast.error("Error Getting Details");
     console.error("Error fetching country details:", error);
     throw error;
   }
 };
 
-
 export const getAllCountries = async (): Promise<Country[]> => {
   try {
-    const res = await fetch(
-      "https://restcountries.com/v3.1/all?fields=name,flags,capital,population,continents,languages"
-    );
+    const fetchPage = async (offset: number) => {
+      const res = await fetch(
+        `https://api.restcountries.com/countries/v5?response_fields=names.common,capitals,codes.alpha_3,population,continents,languages,flag&limit=100&offset=${offset}`,
+        {
+          headers: {
+            Authorization: `Bearer ${APIKEY}`,
+          },
+        },
+      );
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch country details");
-    }
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
 
-    const data = await res.json();
+      return res.json();
+    };
 
-    const countryData: Country[] = data.map((item: any) => ({
-      name: item.name.common,
-      capital: item.capital?.[0] ?? "N/A",
-      population: item.population,
+    const [page1, page2, page3] = await Promise.all([
+      fetchPage(0),
+      fetchPage(100),
+      fetchPage(200),
+    ]);
+
+    const allCountries = [
+      ...page1.data.objects,
+      ...page2.data.objects,
+      ...page3.data.objects,
+    ];
+
+    const countryData: Country[] = allCountries.map((item: any) => ({
+      name: item.names?.common ?? "N/A",
+      capital: item.capitals?.[0]?.name ?? "N/A",
+      population: item.population ?? 0,
       continent: item.continents?.[0] ?? "N/A",
-      languages: item.languages
-        ? Object.values(item.languages).join(", ")
-        : "N/A",
-      flag: item.flags?.png,
+      code: item.codes.alpha_3 ?? "N/A",
+      languages:
+        item.languages?.map((lang: any) => lang.name).join(", ") ?? "N/A",
+      flag: item.flag?.url_png || item.flag?.url_svg || "",
     }));
+
+    // saveToJson(countryData)
 
     return countryData;
   } catch (error) {
-    toast.error("Error Getting Details")
+    toast.error("Error Getting Details");
     console.error("Error fetching country data:", error);
     throw error;
   }

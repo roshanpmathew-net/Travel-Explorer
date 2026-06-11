@@ -1,62 +1,95 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getCountryDetails, type CountryDetails } from "@/services/CountryDet";
+import { getCountryDetails, type CountryDetails, mapRawToCountryDetails } from "@/services/CountryDet";
 import { addToFavourites, isLiked, removeFromFavourites } from "@/services/Favourites";
 
 import { getCountryImage, type CountryImage } from "@/services/Image";
+import CountryData from '../data/CountryDetails.json'
 import Loader from "@/ui-components/Loader";
 import { Button } from "@base-ui/react/button";
 import { CircleArrowRight, Heart, Map } from "lucide-react";
 import CountryDet from "@/ui-components/Country_Det";
 import ImageGallery from "@/ui-components/Image_Gallery";
+import { toast } from "react-toastify";
+
 import GalleryFull from "@/ui-components/GalleryFull";
 
 const Country = () => {
-  const { name } = useParams();
+  const { code } = useParams();
   const [countryData, setCountryData] = useState<CountryDetails | null>(null);
+  const [name, setName] = useState('')
   const [countryImage, setImage] = useState<CountryImage | null>(null);
   const [loading, setLoading] = useState(true);
-  const [liked, setLiked] = useState(isLiked(name!));
+  
   const [isOpen, setOpen] = useState(false);
 
-  useEffect(() => {
-    const getCountryData = async () => {
-      if (!name) return;
-      try {
-        const countryData = await getCountryDetails(name);
-        setCountryData(countryData);
-        // console.log(countryData);
-      } catch (error) {
-        console.error("Error fetching country data:", error);
-      }
-    };
+const [liked, setLiked] = useState(false);
 
-    const fetchCountryImage = async () => {
-      if (!name) return;
-      try {
-        const Image = await getCountryImage(name);
-        setImage(Image);
-        setLoading(false);
-        // console.log(countryImage);
-      } catch (error) {
-        console.error("Error fetching country Image:", error);
-      }
-    };
+useEffect(() => {
+  const fetchCountryData = async () => {
+    if (!code) return;
+    setLoading(true);
+    try {
+      throw console.error();
+      
+      const data = await getCountryDetails(code);
+      setCountryData(data);
+      setName(data.name);
+      const countryId = data.code && data.code !== "N/A" ? data.code : data.name;
+      setLiked(isLiked(countryId)); 
+    } catch (error) {
+      console.error("Error fetching country data:", error);
+      console.log('Falling to backup..')
+      toast.warning('Loading Backup...')
 
-    getCountryData();
-    fetchCountryImage();
-  }, [name]);
+      const rawBackup = (CountryData as any)[code.toUpperCase()];
+      if (rawBackup) {
+        const backupCountryData = mapRawToCountryDetails(rawBackup);
+        setCountryData(backupCountryData);
+        setName(backupCountryData.name);
+        const countryId = backupCountryData.code && backupCountryData.code !== "N/A" ? backupCountryData.code : backupCountryData.name;
+        setLiked(isLiked(countryId)); 
+      }
+
+      setLoading(false);
+    }
+  };
+
+  fetchCountryData();
+}, [code]);
+
+useEffect(() => {
+  const fetchImage = async () => {
+    if (!name) return; 
+    try {
+      const image = await getCountryImage(name);
+      setImage(image);
+    } catch (error) {
+      console.error("Error fetching country image:", error);
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  fetchImage();
+}, [name]);
+
+
 
   const handleLike = () => {
-  if (liked) {
-    removeFromFavourites(name!);
-    setLiked(false);
-  } else {
-    addToFavourites(name!);
-    setLiked(true);
-  }}
+    if (!countryData) return;
+    const countryId = countryData.code && countryData.code !== "N/A" ? countryData.code : countryData.name;
+    if (liked) {
+      removeFromFavourites(countryId);
+      setLiked(false);
+    } else {
+      addToFavourites(countryId);
+      setLiked(true);
+    }
+  }
 
-
+  if(loading){
+  }
   return loading ? (
     <Loader />
   ) : (
@@ -131,7 +164,7 @@ const Country = () => {
             </p>
 
             <h2 className="text-2xl md:text-4xl font-bold mt-2">
-              Navigate {name?.toUpperCase()}
+              Navigate {countryData?.name.toUpperCase()}
             </h2>
 
             <p className="mt-3 text-blue-100 leading-relaxed">
@@ -194,10 +227,10 @@ const Country = () => {
           >
             <div className="absolute inset-0 bg-black/40" onDoubleClick={()=>setOpen(false)} />
 
-            <GalleryFull name={name} setOpen={setOpen} />
+            <GalleryFull name={countryData?.name} setOpen={setOpen} />
           </div>
 
-          <ImageGallery name={name} />
+          <ImageGallery name={countryData?.name} />
         </div>
       </div>
     </div>

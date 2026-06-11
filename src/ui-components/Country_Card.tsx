@@ -13,30 +13,31 @@ interface CountryCardProps {
   onRemove?: (countryName: string) => void;
 }
 
-const CountryCard = ({ item, onRemove  }: CountryCardProps) => {
+const CountryCard = ({ item, onRemove }: CountryCardProps) => {
   const nav = useNavigate();
-  const [liked, setLiked] = useState(isLiked(item.name));
+  const countryId = item.code && item.code !== "N/A" ? item.code : item.name;
+  const [liked, setLiked] = useState(isLiked(countryId));
 
   useEffect(() => {
-    setLiked(isLiked(item.name));
-  }, [item.name]);
+    setLiked(isLiked(countryId));
+  }, [countryId]);
 
   const handleLike = () => {
-  if (liked) {
-    removeFromFavourites(item.name);
-    setLiked(false);
+    if (liked) {
+      removeFromFavourites(countryId);
+      setLiked(false);
 
-    onRemove?.(item.name);
-  } else {
-    addToFavourites(item.name);
-    setLiked(true);
-  }
-};
+      onRemove?.(item.name);
+    } else {
+      addToFavourites(countryId);
+      setLiked(true);
+    }
+  };
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md border border-gray-100 dark:border-slate-800 max-w-sm cursor-pointer">
       <div className="relative">
         <img
-          src={item.flag}
+          src={item.flag || "./images/flag.png"}
           alt={item.name}
           className="w-full h-44 object-cover"
         />
@@ -53,7 +54,9 @@ const CountryCard = ({ item, onRemove  }: CountryCardProps) => {
 
       <div
         className="p-4"
-        onClick={() => nav(`/country/${encodeURIComponent(item.name)}`)}
+        onClick={() =>
+  nav(`/country/${encodeURIComponent(countryId)}`)
+}
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
@@ -81,11 +84,13 @@ const CountryCard = ({ item, onRemove  }: CountryCardProps) => {
                 Population
               </p>
               <p className="text-lg font-medium text-slate-800 dark:text-slate-200">
-                {item.population >= 1_000_000
-                  ? `${(item.population / 1_000_000).toFixed(1)}M`
-                  : item.population >= 1_000
-                    ? `${(item.population / 1_000).toFixed(0)}K`
-                    : item.population.toString()}
+                {item.population >= 1_000_000_000
+                  ? `${(item.population / 1_000_000_000).toFixed(1)}B`
+                  : item.population >= 1_000_000
+                    ? `${(item.population / 1_000_000).toFixed(1)}M`
+                    : item.population >= 1_000
+                      ? `${(item.population / 1_000).toFixed(0)}K`
+                      : item.population.toString()}
               </p>
             </div>
           </div>

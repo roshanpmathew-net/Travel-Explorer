@@ -40,7 +40,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/country/:name" element={<Country />} />
+            <Route path="/country/:code" element={<Country />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/compare" element={<Compare />} />
             <Route path="/plans" element={<Plans />} />

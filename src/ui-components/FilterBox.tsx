@@ -23,14 +23,17 @@ const FilterBox = ({
   const langs = ["English", "French", "Spanish", "Hindi", "Japanese", "Polish"];
 
   const formatPopulation = (num: number) => {
-    if (num >= 1_000_000) {
-      return `${(num / 1_000_000).toFixed(0)}M`;
-    }
-    if (num >= 1_000) {
-      return `${(num / 1_000).toFixed(0)}K`;
-    }
-    return num.toString();
-  };
+  if (num >= 1_000_000_000) {
+    return `${(num / 1_000_000_000).toFixed(1)}B`;
+  }
+  if (num >= 1_000_000) {
+    return `${(num / 1_000_000).toFixed(1)}M`;
+  }
+  if (num >= 1_000) {
+    return `${(num / 1_000).toFixed(0)}K`;
+  }
+  return num.toString();
+};
 
   const handleLanguageChange = (language: string) => {
     setLangs((prev) =>
@@ -85,8 +88,9 @@ const FilterBox = ({
             setValue(Array.isArray(newValue) ? [...newValue] : [newValue])
           }
           min={1_00}
-          max={100_000_000}
-          step={1_000}
+          max={350_000_000}
+          step={500}
+          className={'cursor-pointer'}
         />
       </div>
       <div>

@@ -20,7 +20,9 @@ const CountryDet = ({ item }: CountryProps) => {
       label: "Population",
       icon: <Users />,
       value:
-        item.population >= 1_000_000
+      item.population >= 1_000_000_000
+        ? `${(item.population / 1_000_000_000).toFixed(1)}B`
+        : item.population >= 1_000_000
           ? `${(item.population / 1_000_000).toFixed(1)}M`
           : item.population >= 1_000
             ? `${(item.population / 1_000).toFixed(0)}K`

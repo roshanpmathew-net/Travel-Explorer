@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { getAllCountries, type Country } from "@/services/CountryDet";
 import CountryCard from "@/ui-components/Country_Card";
+import data from "../data/Countries.json"
+import { toast } from "react-toastify";
+
 import { Grid2x2, List } from "lucide-react";
 import CountryList from "@/ui-components/Country_List";
 import Loader from "@/ui-components/Loader";
@@ -65,24 +68,34 @@ const Explore = () => {
   const totalPages = Math.ceil(filteredCountries.length / CardsPerpage);
 
   useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const data = await getAllCountries();
+  const fetchCountries = async () => {
+    try {
+      throw console.error();
+      
+      const data = await getAllCountries();
 
-        setLength(data.length);
+      const MainCountries = data.filter(
+        (country) => country.code?.trim()
+      );
 
-        // console.log(data.length); // Correct
-        // console.log(data);
-        setLoading(false);
+      setLength(MainCountries.length);
+      setCountry(MainCountries);
+      setLoading(false);
+    } catch (e) {
+      console.error(e);
+      console.log('Falling to backup..')
+      toast.warning('Loading Backup...')
+      
+      setCountry(data)
+      setLength(data.length)
+      setLoading(false);
 
-        setCountry(data);
-      } catch (e) {
-        console.error(e);
-      }
-    };
 
-    fetchCountries();
-  }, []);
+    }
+  };
+
+  fetchCountries();
+}, []);
 
   return (
     <div className="flex flex-row gap-2 mt-14 px-11">

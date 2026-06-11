@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 interface Country {
   id: number;
   name: string;
+  code:string;
   population: number;
   capital: string;
   attractionName: string;
@@ -91,7 +92,7 @@ const Featured = () => {
         className="w-full flex gap-4 mt-4"
         
       >
-        <div className="w-2/3 h-100 rounded-xl relative overflow-hidden group cursor-pointer" onClick={() => navigate(`/country/${mainCountry?.name.toLowerCase()}`)}>
+        <div className="w-2/3 h-100 rounded-xl relative overflow-hidden group cursor-pointer" onClick={() => navigate(`/country/${mainCountry?.code}`)}>
           {!imagesLoaded ? (
             <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-gray-200 dark:bg-slate-800 animate-pulse">
               <ImageIcon className="w-12 h-12 text-gray-400 dark:text-gray-500" />
@@ -134,7 +135,7 @@ const Featured = () => {
               className="group relative h-47.5 rounded-xl overflow-hidden cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/country/${country.name.toLowerCase()}`);
+                navigate(`/country/${country.code}`);
               }}
             >
               {!imagesLoaded ? (

@@ -2,6 +2,7 @@
   {
     "id": 1,
     "name": "Japan",
+    "code": "JPN",
     "capital": "Tokyo",
     "population": 123294513,
     "currency": "JPY",
@@ -11,6 +12,7 @@
   {
     "id": 2,
     "name": "France",
+    "code": "FRA",
     "capital": "Paris",
     "population": 68374000,
     "currency": "EUR",
@@ -20,6 +22,7 @@
   {
     "id": 3,
     "name": "Italy",
+    "code": "ITA",
     "capital": "Rome",
     "population": 58900000,
     "currency": "EUR",
@@ -29,6 +32,7 @@
   {
     "id": 4,
     "name": "India",
+    "code": "IND",
     "capital": "New Delhi",
     "population": 1438069596,
     "currency": "INR",
@@ -38,6 +42,7 @@
   {
     "id": 5,
     "name": "Australia",
+    "code": "AUS",
     "capital": "Canberra",
     "population": 27000000,
     "currency": "AUD",
@@ -47,6 +52,7 @@
   {
     "id": 6,
     "name": "United States",
+    "code": "USA",
     "capital": "Washington, D.C.",
     "population": 340110988,
     "currency": "USD",
@@ -56,6 +62,7 @@
   {
     "id": 7,
     "name": "Canada",
+    "code": "CAN",
     "capital": "Ottawa",
     "population": 41528800,
     "currency": "CAD",
@@ -65,6 +72,7 @@
   {
     "id": 8,
     "name": "Brazil",
+    "code": "BRA",
     "capital": "Brasília",
     "population": 212600000,
     "currency": "BRL",
@@ -74,6 +82,7 @@
   {
     "id": 9,
     "name": "Switzerland",
+    "code": "CHE",
     "capital": "Bern",
     "population": 9030000,
     "currency": "CHF",
@@ -83,6 +92,7 @@
   {
     "id": 10,
     "name": "Thailand",
+    "code": "THA",
     "capital": "Bangkok",
     "population": 66090000,
     "currency": "THB",
@@ -92,6 +102,7 @@
   {
     "id": 11,
     "name": "United Kingdom",
+    "code": "GBR",
     "capital": "London",
     "population": 69138192,
     "currency": "GBP",
@@ -101,6 +112,7 @@
   {
     "id": 12,
     "name": "Egypt",
+    "code": "EGY",
     "capital": "Cairo",
     "population": 114500000,
     "currency": "EGP",

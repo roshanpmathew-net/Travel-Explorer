@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
-import { Moon, Sun, Menu, X, Search } from "lucide-react";
+import { Moon, Sun, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import LoginDropDown from "./Login_DropDown";
 import LangDropDown from "./Lang_Dropdown";

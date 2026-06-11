@@ -12,13 +12,18 @@ interface CountryCardProps {
 
 const CountryList = ({ item, onRemove  }: CountryCardProps) => {
   const nav = useNavigate();
-  const [liked, setLiked] = useState(isLiked(item.name));
+  const countryId = item.code && item.code !== "N/A" ? item.code : item.name;
+  const [liked, setLiked] = useState(isLiked(countryId));
 
   useEffect(() => {
-    setLiked(isLiked(item.name));
-  }, [item.name]);
+    setLiked(isLiked(countryId));
+  }, [countryId]);
 
   const formatPopulation = (population: number) => {
+    if (population >= 1_000_000_000) {
+      return `${(population / 1_000_000_000).toFixed(1)}B`;
+    }
+
     if (population >= 1_000_000) {
       return `${(population / 1_000_000).toFixed(1)}M`;
     }
@@ -31,12 +36,12 @@ const CountryList = ({ item, onRemove  }: CountryCardProps) => {
   };
   const handleLike = () => {
   if (liked) {
-    removeFromFavourites(item.name);
+    removeFromFavourites(countryId);
     setLiked(false);
 
     onRemove?.(item.name);
   } else {
-    addToFavourites(item.name);
+    addToFavourites(countryId);
     setLiked(true);
   }
 };
@@ -53,7 +58,7 @@ const CountryList = ({ item, onRemove  }: CountryCardProps) => {
 
       <div>
         <h2  onClick={() =>
-        nav(`/country/${encodeURIComponent(item.name)}`)
+        nav(`/country/${encodeURIComponent(countryId)}`)
       } className="font-semibold text-2xl text-slate-800 dark:text-slate-100">
           {item.name}
         </h2>

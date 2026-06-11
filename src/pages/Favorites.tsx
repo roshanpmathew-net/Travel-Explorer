@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import CountryCard from "@/ui-components/Country_Card";
 import { getCountryDetails, type Country } from "@/services/CountryDet";
+import CountryData from '../data/CountryDetails.json'
+
 import { Grid2x2, List } from "lucide-react";
 import CountryList from "@/ui-components/Country_List";
+import { toast } from "react-toastify";
+import Loader from "@/ui-components/Loader";
 
 const Favorites = () => {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -14,13 +18,38 @@ const Favorites = () => {
 
       if (!stored) return;
 
-      const favNames: string[] = JSON.parse(stored);
+      const favCodes: string[] = JSON.parse(stored);
+      console.log(favCodes)
 
-      const data = await Promise.all(
-        favNames.map((name) => getCountryDetails(name)),
-      );
-
-      setCountries(data);
+      try {
+        throw console.error();
+        
+        const data = await Promise.all(
+          favCodes.map((code) => getCountryDetails(code)),
+        );
+        setCountries(data);
+      } catch (error) {
+        console.error("Error fetching favorites details:", error);
+        toast.warning('Loading Backup...')
+        const backup = favCodes
+          .map((code) => {
+            const item = (CountryData as any)[code.toUpperCase()];
+            if (!item) return null;
+            return {
+              name: item.names?.common ?? "N/A",
+              capital: item.capitals?.[0]?.name ?? "N/A",
+              population: item.population ?? 0,
+              continent: item.continents?.[0] ?? "N/A",
+              code: item.codes?.alpha_3 ?? "N/A",
+              languages:
+                item.languages?.map((lang: any) => lang.name).join(", ") ??
+                "N/A",
+              flag: item.flag?.url_png || item.flag?.url_svg || "",
+            };
+          })
+          .filter((country): country is Country => country !== null);
+        setCountries(backup);
+      }
     };
 
     fetchFavs();
@@ -69,6 +98,8 @@ const Favorites = () => {
         </div>
       </div>
 
+
+
       {view === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {countries.length > 0 ? (
@@ -80,12 +111,7 @@ const Favorites = () => {
               />
             ))
           ) : (
-            <div className="col-span-full flex flex-col items-center justify-center py-20">
-              <p className="text-xl text-gray-500">No favorites yet</p>
-              <p className="text-sm text-gray-400 mt-2">
-                Start exploring and save countries you love.
-              </p>
-            </div>
+            <Loader/>
           )}
         </div>
       ) : (
@@ -110,9 +136,7 @@ const Favorites = () => {
               ))}
             </>
           ) : (
-            <div className="text-center py-20 text-gray-500">
-              No favorites yet
-            </div>
+            <Loader/>
           )}
         </div>
       )}
