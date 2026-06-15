@@ -20,18 +20,17 @@ const handleLogout = () => {
   return (
     <div>
       <DropdownMenu>
-        <DropdownMenuTrigger>
-          
-          <div>
-             <div className="flex items-center gap-3">
-                <img
-                  src={user?.img_url ?? "./images/user.webp"}
-                  alt={user?.name}
-                  title={user?.name}
-                  className="h-10 w-10 rounded-full cursor-pointer border"
-                />
-              </div>
-          </div>
+        <DropdownMenuTrigger
+          render={
+            <button className="flex items-center gap-3 cursor-pointer rounded-full focus:outline-none" />
+          }
+        >
+          <img
+            src={user?.img_url ?? "./images/user.webp"}
+            alt={user?.name}
+            title={user?.name}
+            className="h-10 w-10 rounded-full border"
+          />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuGroup>

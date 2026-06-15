@@ -1,18 +1,19 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getCountryDetails, type CountryDetails, mapRawToCountryDetails } from "@/services/CountryDet";
-import { addToFavourites, isLiked, removeFromFavourites } from "@/services/Favourites";
-
+import { getCountryDetails, type CountryDetails, mapRawToCountryDetails, type RawCountryDetails } from "@/services/CountryDet";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
+import { toggleFavorite } from "@/redux/favoritesSlice";
 import { getCountryImage, type CountryImage } from "@/services/Image";
 import CountryData from '../data/CountryDetails.json'
-import Loader from "@/ui-components/Loader";
+import Loader from "@/ui-components/Common/Loader";
 import { Button } from "@base-ui/react/button";
 import { CircleArrowRight, Heart, Map } from "lucide-react";
-import CountryDet from "@/ui-components/Country_Det";
-import ImageGallery from "@/ui-components/Image_Gallery";
+import CountryDet from "@/ui-components/ExplorePage/Country_Det";
+import ImageGallery from "@/ui-components/CountryPage/Image_Gallery";
 import { toast } from "react-toastify";
 
-import GalleryFull from "@/ui-components/GalleryFull";
+import GalleryFull from "@/ui-components/CountryPage/GalleryFull";
 
 const Country = () => {
   const { code } = useParams();
@@ -23,73 +24,69 @@ const Country = () => {
   
   const [isOpen, setOpen] = useState(false);
 
-const [liked, setLiked] = useState(false);
+  const dispatch = useDispatch<AppDispatch>()
+  const favorites = useSelector(
+    (state: RootState) => state.favorites.favorites
+  );
 
-useEffect(() => {
-  const fetchCountryData = async () => {
-    if (!code) return;
-    setLoading(true);
-    try {
-      throw console.error();
-      
-      const data = await getCountryDetails(code);
-      setCountryData(data);
-      setName(data.name);
-      const countryId = data.code && data.code !== "N/A" ? data.code : data.name;
-      setLiked(isLiked(countryId)); 
-    } catch (error) {
-      console.error("Error fetching country data:", error);
-      console.log('Falling to backup..')
-      toast.warning('Loading Backup...')
+  const countryId = countryData?.code && countryData.code !== "N/A" ? countryData.code : countryData?.name || "";
+  const isLiked = favorites.includes(countryId);
 
-      const rawBackup = (CountryData as any)[code.toUpperCase()];
-      if (rawBackup) {
-        const backupCountryData = mapRawToCountryDetails(rawBackup);
-        setCountryData(backupCountryData);
-        setName(backupCountryData.name);
-        const countryId = backupCountryData.code && backupCountryData.code !== "N/A" ? backupCountryData.code : backupCountryData.name;
-        setLiked(isLiked(countryId)); 
+  useEffect(() => {
+    const fetchCountryData = async () => {
+      if (!code) return;
+      setLoading(true);
+      try {
+        throw console.error();
+        
+        const data = await getCountryDetails(code);
+        setCountryData(data);
+        setName(data.name);
+      } catch (error) {
+        console.error("Error fetching country data:", error);
+        console.log('Falling to backup..')
+        toast.warning('Loading Backup...')
+
+        const rawBackup = (CountryData as Record<string, RawCountryDetails>)[code.toUpperCase()];
+        if (rawBackup) {
+          const backupCountryData = mapRawToCountryDetails(rawBackup);
+          setCountryData(backupCountryData);
+          setName(backupCountryData.name);
+        }
+
+        setLoading(false);
       }
+    };
 
-      setLoading(false);
-    }
-  };
+    fetchCountryData();
+  }, [code]);
 
-  fetchCountryData();
-}, [code]);
+  useEffect(() => {
+    const fetchImage = async () => {
+      if (!name) return; 
+      try {
+        const image = await getCountryImage(name);
+        setImage(image);
+      } catch (error) {
+        console.error("Error fetching country image:", error);
+      } finally {
+        setLoading(false); 
+      }
+    };
 
-useEffect(() => {
-  const fetchImage = async () => {
-    if (!name) return; 
-    try {
-      const image = await getCountryImage(name);
-      setImage(image);
-    } catch (error) {
-      console.error("Error fetching country image:", error);
-    } finally {
-      setLoading(false); 
-    }
-  };
-
-  fetchImage();
-}, [name]);
-
-
+    fetchImage();
+  }, [name]);
 
   const handleLike = () => {
     if (!countryData) return;
-    const countryId = countryData.code && countryData.code !== "N/A" ? countryData.code : countryData.name;
-    if (liked) {
-      removeFromFavourites(countryId);
-      setLiked(false);
+    dispatch(toggleFavorite(countryId));
+    if (isLiked) {
+      toast.success("Removed from favorites");
     } else {
-      addToFavourites(countryId);
-      setLiked(true);
+      toast.success("Added to favorites");
     }
-  }
+  };
 
-  if(loading){
-  }
   return loading ? (
     <Loader />
   ) : (
@@ -128,14 +125,13 @@ useEffect(() => {
             <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
               <Button
                 className="bg-blue-600 flex items-center justify-center p-4 px-6 lg:px-8 rounded-lg gap-3 cursor-pointer w-full sm:w-auto"
-                onClick={() => setLiked(!liked)}
+                onClick={handleLike}
               >
                 <Heart
-                  onClick={()=>handleLike()}
-                  className={liked ? "fill-white text-white" : "text-white"}
+                  className={isLiked ? "fill-white text-white" : "text-white"}
                   size={24}
                 />
-                Add to Favorites
+                {isLiked ? "Remove from Favorites" : "Add to Favorites"}
               </Button>
 
               <a

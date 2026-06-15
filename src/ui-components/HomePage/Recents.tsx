@@ -13,9 +13,7 @@ const Recents = () => {
       <div className="flex items-center gap-2 mb-5">
         <ClockFading className="w-5 h-5 text-[#2563EB]" />
         <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-50">
-          {
-                t("recently_viewed")
-              }
+          {t("recently_viewed")}
         </h2>
       </div>
 
@@ -44,9 +42,7 @@ const Recents = () => {
 
           <Link to="/login">
             <Button className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white cursor-pointer px-6">
-              {
-                t("login")
-              }
+              { t("login") }
             </Button>
           </Link>
         </div>

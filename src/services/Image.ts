@@ -3,6 +3,14 @@ export interface CountryImage {
   alt: string;
 }
 
+interface PexelsPhoto {
+  src: {
+    medium: string;
+    landscape: string;
+  };
+  alt: string;
+}
+
 const PEXELS_AUTH = import.meta.env.VITE_PEXELS_API_KEY;
 
 export const getCountryImage = async (name: string): Promise<CountryImage> => {
@@ -24,7 +32,7 @@ export const getCountryImage = async (name: string): Promise<CountryImage> => {
     }
     const data = await res.json();
 
-    const image = data.photos?.[0];
+    const image = (data.photos as PexelsPhoto[])?.[0];
 
     if (!image) {
       throw new Error("No image found");
@@ -61,9 +69,9 @@ export const getImages = async (
     }
     const data = await res.json();
 
-    const imageData: CountryImage[] = data.photos
+    const imageData: CountryImage[] = (data.photos as PexelsPhoto[])
       .slice(1)
-      .map((image: any) => ({
+      .map((image) => ({
         src: image.src.medium,
         alt: image.alt,
       }));

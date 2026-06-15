@@ -1,24 +1,23 @@
 import { Heart } from "lucide-react";
 import { type Country } from "@/services/CountryDet";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { addToFavourites, isLiked, removeFromFavourites } from "@/services/Favourites";
-
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
+import { toggleFavorite } from "@/redux/favoritesSlice";
 
 interface CountryCardProps {
   item: Country;
-  onRemove?: (countryName: string) => void;
 }
 
-const CountryList = ({ item, onRemove  }: CountryCardProps) => {
+const CountryList = ({ item  }: CountryCardProps) => {
   const nav = useNavigate();
   const countryId = item.code && item.code !== "N/A" ? item.code : item.name;
-  const [liked, setLiked] = useState(isLiked(countryId));
+  const dispatch = useDispatch<AppDispatch>()
+  const favorites = useSelector(
+    (state: RootState) => state.favorites.favorites
+  );
 
-  useEffect(() => {
-    setLiked(isLiked(countryId));
-  }, [countryId]);
-
+  const isLiked = favorites.includes(countryId);
   const formatPopulation = (population: number) => {
     if (population >= 1_000_000_000) {
       return `${(population / 1_000_000_000).toFixed(1)}B`;
@@ -34,17 +33,7 @@ const CountryList = ({ item, onRemove  }: CountryCardProps) => {
 
     return population.toString();
   };
-  const handleLike = () => {
-  if (liked) {
-    removeFromFavourites(countryId);
-    setLiked(false);
-
-    onRemove?.(item.name);
-  } else {
-    addToFavourites(countryId);
-    setLiked(true);
-  }
-};
+ 
   return (
     <div
      
@@ -92,13 +81,14 @@ const CountryList = ({ item, onRemove  }: CountryCardProps) => {
       </div>
 
       <button
-       onClick={()=>handleLike()}
+       onClick={() =>
+          dispatch(toggleFavorite(countryId))}
         className="flex justify-center cursor-pointer"
       >
         <Heart
           
           className={`w-6 h-6 transition  ${
-            liked
+            isLiked
               ? "fill-red-500 text-red-500"
               : "text-slate-700 dark:text-slate-400"
           }`}

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { Moon, Sun, Menu, X } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../../../context/AuthContext";
+import { useTheme } from "../../../context/ThemeContext";
 
 import { Button } from "@/components/ui/button";
 import LoginDropDown from "./Login_DropDown";

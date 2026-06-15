@@ -1,39 +1,58 @@
 import { useEffect, useState } from "react";
-import CountryCard from "@/ui-components/Country_Card";
-import { getCountryDetails, type Country } from "@/services/CountryDet";
-import CountryData from '../data/CountryDetails.json'
+import CountryCard from "@/ui-components/ExplorePage/Country_Card";
+import {
+  getCountryDetails,
+  type Country,
+  type RawCountryDetails,
+} from "@/services/CountryDet";
+import CountryData from "../data/CountryDetails.json";
 
 import { Grid2x2, List } from "lucide-react";
-import CountryList from "@/ui-components/Country_List";
+import CountryList from "@/ui-components/ExplorePage/Country_List";
 import { toast } from "react-toastify";
-import Loader from "@/ui-components/Loader";
+import Loader from "@/ui-components/Common/Loader";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
+import CustomButton from "@/ui-components/Common/customButton";
+import { useAuth } from "@/context/AuthContext";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const Favorites = () => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [view, setView] = useState("grid");
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const { user } = useAuth();
+
+  const favCodes = useSelector((state: RootState) => state.favorites.favorites);
+
+  if(user)
+  {
+     useEffect(() => {
     const fetchFavs = async () => {
-      const stored = localStorage.getItem("favs");
-
-      if (!stored) return;
-
-      const favCodes: string[] = JSON.parse(stored);
-      console.log(favCodes)
-
+      if (!favCodes || favCodes.length === 0) {
+        setCountries([]);
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
       try {
         throw console.error();
-        
+
         const data = await Promise.all(
           favCodes.map((code) => getCountryDetails(code)),
         );
         setCountries(data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching favorites details:", error);
-        toast.warning('Loading Backup...')
+        toast.warning("Loading Backup...");
         const backup = favCodes
           .map((code) => {
-            const item = (CountryData as any)[code.toUpperCase()];
+            const item = (CountryData as Record<string, RawCountryDetails>)[
+              code.toUpperCase()
+            ];
             if (!item) return null;
             return {
               name: item.names?.common ?? "N/A",
@@ -42,24 +61,22 @@ const Favorites = () => {
               continent: item.continents?.[0] ?? "N/A",
               code: item.codes?.alpha_3 ?? "N/A",
               languages:
-                item.languages?.map((lang: any) => lang.name).join(", ") ??
-                "N/A",
+                item.languages?.map((lang) => lang.name).join(", ") ?? "N/A",
               flag: item.flag?.url_png || item.flag?.url_svg || "",
             };
           })
           .filter((country): country is Country => country !== null);
         setCountries(backup);
+        setLoading(false);
       }
     };
 
     fetchFavs();
-  }, []);
+  }, [favCodes]);
 
-  const handleRemoveFavourite = (countryName: string) => {
-    setCountries((prev) =>
-      prev.filter((country) => country.name !== countryName),
-    );
-  };
+  }
+
+ 
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -68,76 +85,77 @@ const Favorites = () => {
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
             Favorites
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className={`hidden ${user && "text-gray-500 mt-1" }`}>
             {countries.length} saved destinations
           </p>
         </div>
 
-        <div className="flex gap-2 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
-          <button
+        <div className={`hidden ${ user && "flex gap-2 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl"}`}>
+          <CustomButton
+            active={view === "grid"}
             onClick={() => setView("grid")}
-            className={`p-2 rounded-lg transition-all cursor-pointer ${
-              view === "grid"
-                ? "bg-white dark:bg-slate-700 shadow text-blue-600"
-                : "text-gray-500"
-            }`}
           >
             <Grid2x2 size={18} />
-          </button>
+          </CustomButton>
 
-          <button
+          <CustomButton
+            active={view === "list"}
             onClick={() => setView("list")}
-            className={`p-2 rounded-lg cursor-pointer transition-all ${
-              view === "list"
-                ? "bg-white dark:bg-slate-700 shadow text-blue-600"
-                : "text-gray-500"
-            }`}
           >
             <List size={18} />
-          </button>
+          </CustomButton>
         </div>
       </div>
 
+      {user ? (
+        loading ? (
+          <Loader />
+        ) : view === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {countries.length > 0 ? (
+              countries.map((country) => (
+                <CountryCard key={country.name} item={country} />
+              ))
+            ) : (
+              <p className="text-center text-gray-500 col-span-full">
+                No favorites found
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden">
+            {countries.length > 0 ? (
+              <>
+                <div className="grid grid-cols-[120px_2fr_140px_140px_300px_60px] gap-6 px-5 py-4 border-b border-gray-200 dark:border-slate-800 text-sm font-semibold text-gray-500">
+                  <div>Flag</div>
+                  <div>Country</div>
+                  <div>Capital</div>
+                  <div>Population</div>
+                  <div>Language</div>
+                  <div></div>
+                </div>
 
-
-      {view === "grid" ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {countries.length > 0 ? (
-            countries.map((country) => (
-              <CountryCard
-                key={country.name}
-                item={country}
-                onRemove={handleRemoveFavourite}
-              />
-            ))
-          ) : (
-            <Loader/>
-          )}
-        </div>
+                {countries.map((country) => (
+                  <CountryList key={country.name} item={country} />
+                ))}
+              </>
+            ) : (
+              <p className="text-center text-gray-500 py-10">
+                No favorites found
+              </p>
+            )}
+          </div>
+        )
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden">
-          {countries.length > 0 ? (
-            <>
-              <div className="grid grid-cols-[120px_2fr_140px_140px_300px_60px] gap-6 px-5 py-4 border-b border-gray-200 dark:border-slate-800 text-sm font-semibold text-gray-500">
-                <div>Flag</div>
-                <div>Country</div>
-                <div>Capital</div>
-                <div>Population</div>
-                <div>Language</div>
-                <div></div>
-              </div>
-
-              {countries.map((country) => (
-                <CountryList
-                  key={country.name}
-                  item={country}
-                  onRemove={handleRemoveFavourite}
-                />
-              ))}
-            </>
-          ) : (
-            <Loader/>
-          )}
+        <div className="flex items-center flex-col gap-4 justify-center py-20">
+          <p className="text-lg text-gray-500">
+            Please Login to Access this feature
+          </p>
+          <Link to="/login">
+            <Button className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white cursor-pointer px-6">
+              Login
+            </Button>
+          </Link>
         </div>
       )}
     </div>

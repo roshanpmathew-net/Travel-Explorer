@@ -13,12 +13,13 @@ import AdminPage from "./pages/AdminPage";
 import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import type { RootState } from "./redux/store";
 
 import { useEffect } from "react";
 import i18n from "./i18n";
 
 function App() {
-  const lang = useSelector((state: any) => state.language.language);
+  const lang = useSelector((state: RootState) => state.language.language);
 
   useEffect(() => {
     i18n.changeLanguage(lang);

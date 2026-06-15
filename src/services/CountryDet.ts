@@ -34,7 +34,42 @@ export interface Country {
 
 const APIKEY = import.meta.env.VITE_COUNTRY_API_KEY;
 
-export const mapRawToCountryDetails = (country: any): CountryDetails => {
+interface RawFlag {
+  url_png?: string;
+  url_svg?: string;
+  description?: string;
+}
+
+interface RawCurrency {
+  name: string;
+  symbol: string;
+}
+
+interface RawLanguage {
+  name: string;
+}
+
+export interface RawCountryDetails {
+  names?: {
+    common?: string;
+    official?: string;
+  };
+  flag?: RawFlag;
+  capitals?: { name: string }[];
+  codes?: { alpha_3?: string };
+  continents?: string[];
+  population?: number;
+  area?: { kilometers?: number };
+  currencies?: RawCurrency[];
+  languages?: RawLanguage[];
+  timezones?: string[];
+  links?: {
+    google_maps?: string;
+    open_street_maps?: string;
+  };
+}
+
+export const mapRawToCountryDetails = (country: RawCountryDetails): CountryDetails => {
   return {
     name: country.names?.common ?? "N/A",
     officialName: country.names?.official ?? "N/A",
@@ -47,10 +82,10 @@ export const mapRawToCountryDetails = (country: any): CountryDetails => {
     area: country.area?.kilometers ?? 0,
     currency:
       country.currencies
-        ?.map((c: any) => `${c.name} (${c.symbol})`)
+        ?.map((c) => `${c.name} (${c.symbol})`)
         .join(", ") ?? "N/A",
     languages:
-      country.languages?.map((lang: any) => lang.name).join(", ") ?? "N/A",
+      country.languages?.map((lang) => lang.name).join(", ") ?? "N/A",
     timezone: country.timezones ?? [],
     googleMaps: country.links?.google_maps ?? "",
     openStreetMaps: country.links?.open_street_maps ?? "",
@@ -95,6 +130,16 @@ export const getCountryDetails = async (
   }
 };
 
+interface RawCountrySummary {
+  names?: { common?: string };
+  capitals?: { name: string }[];
+  population?: number;
+  continents?: string[];
+  codes: { alpha_3?: string };
+  languages?: RawLanguage[];
+  flag?: RawFlag;
+}
+
 export const getAllCountries = async (): Promise<Country[]> => {
   try {
     const fetchPage = async (offset: number) => {
@@ -126,14 +171,14 @@ export const getAllCountries = async (): Promise<Country[]> => {
       ...page3.data.objects,
     ];
 
-    const countryData: Country[] = allCountries.map((item: any) => ({
+    const countryData: Country[] = allCountries.map((item: RawCountrySummary) => ({
       name: item.names?.common ?? "N/A",
       capital: item.capitals?.[0]?.name ?? "N/A",
       population: item.population ?? 0,
       continent: item.continents?.[0] ?? "N/A",
-      code: item.codes.alpha_3 ?? "N/A",
+      code: item.codes?.alpha_3 ?? "N/A",
       languages:
-        item.languages?.map((lang: any) => lang.name).join(", ") ?? "N/A",
+        item.languages?.map((lang) => lang.name).join(", ") ?? "N/A",
       flag: item.flag?.url_png || item.flag?.url_svg || "",
     }));
 

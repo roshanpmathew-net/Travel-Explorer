@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import Featured from "@/ui-components/Featured";
-import Recents from "@/ui-components/Recents";
+import Featured from "@/ui-components/HomePage/Featured";
+import Recents from "@/ui-components/HomePage/Recents";
 import { ArrowRight, PlaneTakeoff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {useNavigate} from "react-router-dom";

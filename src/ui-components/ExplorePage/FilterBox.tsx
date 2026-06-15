@@ -1,54 +1,40 @@
 import { Slider } from "@/components/ui/slider";
+import type { Filters } from "@/pages/Explore";
 
-interface FilterProps {
-  region: string;
-  setRegion: React.Dispatch<React.SetStateAction<string>>;
-  selectedLangs: string[];
-  value: number[];
-  setLangs: React.Dispatch<React.SetStateAction<string[]>>;
-  setValue: React.Dispatch<React.SetStateAction<number[]>>;
-  sortBy: string;
-  setSortBy: React.Dispatch<React.SetStateAction<string>>;
+interface FilterBoxProps {
+  filters: Filters;
+  onFilterChange: <K extends keyof Filters>(key: K, value: Filters[K]) => void;
+  onClear: () => void;
 }
+
 const FilterBox = ({
-  region,
-  setRegion,
-  selectedLangs,
-  setLangs,
-  value,
-  sortBy,
-  setSortBy,
-  setValue,
-}: FilterProps) => {
+  filters,
+  onFilterChange,
+  onClear,
+}: FilterBoxProps) => {
+  const { region, selectedLangs, population, sortBy } = filters;
   const langs = ["English", "French", "Spanish", "Hindi", "Japanese", "Polish"];
 
   const formatPopulation = (num: number) => {
-  if (num >= 1_000_000_000) {
-    return `${(num / 1_000_000_000).toFixed(1)}B`;
-  }
-  if (num >= 1_000_000) {
-    return `${(num / 1_000_000).toFixed(1)}M`;
-  }
-  if (num >= 1_000) {
-    return `${(num / 1_000).toFixed(0)}K`;
-  }
-  return num.toString();
-};
+    if (num >= 1_000_000_000) {
+      return `${(num / 1_000_000_000).toFixed(1)}B`;
+    }
+    if (num >= 1_000_000) {
+      return `${(num / 1_000_000).toFixed(1)}M`;
+    }
+    if (num >= 1_000) {
+      return `${(num / 1_000).toFixed(0)}K`;
+    }
+    return num.toString();
+  };
 
   const handleLanguageChange = (language: string) => {
-    setLangs((prev) =>
-      prev.includes(language)
-        ? prev.filter((lang) => lang !== language)
-        : [...prev, language],
-    );
+    const updatedArray = selectedLangs.includes(language)
+      ? selectedLangs.filter((lang) => lang !== language)
+      : [...selectedLangs, language];
+    onFilterChange("selectedLangs", updatedArray);
   };
 
-  const clearAll = () => {
-    setRegion("");
-    setLangs([]);
-    setValue([1000]); 
-    setSortBy("");
-  };
   return (
     <div className="flex flex-col gap-4 text-slate-800 dark:text-slate-200">
       <p className="text-1xl font-semibold text-slate-900 dark:text-slate-50">
@@ -61,7 +47,7 @@ const FilterBox = ({
         <div>
           <select
             value={region}
-            onChange={(e) => setRegion(e.target.value)}
+            onChange={(e) => onFilterChange("region", e.target.value)}
             className="w-full border border-gray-300 dark:border-slate-800 rounded px-3 py-2 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Continent</option>
@@ -80,17 +66,20 @@ const FilterBox = ({
           Population
         </p>
         <div className="text-center font-medium mb-1">
-          {formatPopulation(value[0])}
+          {formatPopulation(population[0])}
         </div>{" "}
         <Slider
-          value={value}
+          value={population}
           onValueChange={(newValue) =>
-            setValue(Array.isArray(newValue) ? [...newValue] : [newValue])
+            onFilterChange(
+              "population",
+              Array.isArray(newValue) ? [...newValue] : [newValue]
+            )
           }
           min={1_00}
           max={350_000_000}
           step={500}
-          className={'cursor-pointer'}
+          className={"cursor-pointer"}
         />
       </div>
       <div>
@@ -126,7 +115,7 @@ const FilterBox = ({
 
         <select
           value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
+          onChange={(e) => onFilterChange("sortBy", e.target.value)}
           className="
       w-full
       rounded-lg
@@ -151,7 +140,7 @@ const FilterBox = ({
       </div>
       <div>
         <button
-          onClick={clearAll}
+          onClick={onClear}
           className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 font-medium cursor-pointer transition-colors"
         >
           Clear All

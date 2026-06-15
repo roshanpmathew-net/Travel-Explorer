@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getImages, type CountryImage } from "@/services/Image";
-import Loader from "./Loader";
+import Loader from "../Common/Loader";
 import { Button } from "@/components/ui/button";
 
 interface GalleryProps {

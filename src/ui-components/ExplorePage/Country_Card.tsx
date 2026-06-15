@@ -1,38 +1,26 @@
 import { Heart } from "lucide-react";
 import { type Country } from "@/services/CountryDet";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import {
-  addToFavourites,
-  isLiked,
-  removeFromFavourites,
-} from "@/services/Favourites";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
+import { toggleFavorite } from "@/redux/favoritesSlice";
 
 interface CountryCardProps {
   item: Country;
-  onRemove?: (countryName: string) => void;
 }
 
-const CountryCard = ({ item, onRemove }: CountryCardProps) => {
+const CountryCard = ({ item }: CountryCardProps) => {
   const nav = useNavigate();
   const countryId = item.code && item.code !== "N/A" ? item.code : item.name;
-  const [liked, setLiked] = useState(isLiked(countryId));
 
-  useEffect(() => {
-    setLiked(isLiked(countryId));
-  }, [countryId]);
+  const dispatch = useDispatch<AppDispatch>()
+  const favorites = useSelector(
+    (state: RootState) => state.favorites.favorites
+  );
 
-  const handleLike = () => {
-    if (liked) {
-      removeFromFavourites(countryId);
-      setLiked(false);
+  const isLiked = favorites.includes(countryId);
 
-      onRemove?.(item.name);
-    } else {
-      addToFavourites(countryId);
-      setLiked(true);
-    }
-  };
+ 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-md border border-gray-100 dark:border-slate-800 max-w-sm cursor-pointer">
       <div className="relative">
@@ -43,11 +31,13 @@ const CountryCard = ({ item, onRemove }: CountryCardProps) => {
         />
 
         <button
-          onClick={() => handleLike()}
+          onClick={() =>
+          dispatch(toggleFavorite(countryId))
+        }
           className="absolute cursor-pointer top-3 right-3 w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center"
         >
           <Heart
-            className={`w-5  h-5 ${liked ? "text-red-800 fill-red-800" : "text-white"}`}
+            className={`w-5  h-5 ${isLiked ? "text-red-800 fill-red-800" : "text-white"}`}
           />
         </button>
       </div>

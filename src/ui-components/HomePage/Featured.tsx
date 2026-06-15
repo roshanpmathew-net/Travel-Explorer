@@ -1,5 +1,5 @@
 import { Banknote, Building2, ImageIcon, Users } from "lucide-react";
-import data from "../data/Featured.json";
+import data from "../../data/Featured.json";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -16,41 +16,19 @@ interface Country {
 }
 
 const Featured = () => {
-
-  const {t}  = useTranslation()
-  const [mainCountry, setMainCountry] = useState<Country | null>(null);
-  const [sideCountries, setSideCountries] = useState<Country[] | null>(null);
+  const { t } = useTranslation();
+  const [featured] = useState<{ mainCountry: Country; sideCountries: Country[] }>(() => {
+    const main = data[Math.floor(Math.random() * data.length)];
+    const available = data.filter((c) => c.id !== main.id);
+    const shuffled = [...available].sort(() => Math.random() - 0.5);
+    return {
+      mainCountry: main,
+      sideCountries: shuffled.slice(0, 2),
+    };
+  });
+  const { mainCountry, sideCountries } = featured;
   const [imagesLoaded, setImagesLoaded] = useState(false);
-
   const navigate = useNavigate();
-
-  const getMainCountry = (countries: Country[]) => {
-    const randomIndex = Math.floor(Math.random() * countries.length);
-
-    return countries[randomIndex];
-  };
-
-  const getSideCountries = (countries: Country[], mainCountry: Country) => {
-    const availableCountries = countries.filter(
-      (country) => country.id !== mainCountry.id,
-    );
-
-    const shuffledCountries = [...availableCountries].sort(
-      () => Math.random() - 0.5,
-    );
-
-    return shuffledCountries.slice(0, 2);
-  };
-
-  useEffect(() => {
-    const selectedMainCountry = getMainCountry(data);
-
-    setMainCountry(selectedMainCountry);
-
-    const selectedSideCountries = getSideCountries(data, selectedMainCountry);
-
-    setSideCountries([selectedSideCountries[0], selectedSideCountries[1]]);
-  }, []);
 
   useEffect(() => {
     if (!mainCountry || !sideCountries) return;
