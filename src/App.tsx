@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import type { RootState } from "./redux/store";
+import Destination from "./pages/Destination";
+import Globe from "./pages/Globe";
 
 import { useEffect } from "react";
 import i18n from "./i18n";
@@ -43,8 +45,10 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/country/:code" element={<Country />} />
             <Route path="/favorites" element={<Favorites />} />
+            <Route path="/globe" element={<Globe />} />
             <Route path="/compare" element={<Compare />} />
             <Route path="/plans" element={<Plans />} />
+            <Route path="/destination/:name" element={<Destination />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<AdminPage />} />

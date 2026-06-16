@@ -1,11 +1,16 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getCountryDetails, type CountryDetails, mapRawToCountryDetails, type RawCountryDetails } from "@/services/CountryDet";
+import {
+  getCountryDetails,
+  type CountryDetails,
+  mapRawToCountryDetails,
+  type RawCountryDetails,
+} from "@/services/CountryDet";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { toggleFavorite } from "@/redux/favoritesSlice";
 import { getCountryImage, type CountryImage } from "@/services/Image";
-import CountryData from '../data/CountryDetails.json'
+import CountryData from "../data/CountryDetails.json";
 import Loader from "@/ui-components/Common/Loader";
 import { Button } from "@base-ui/react/button";
 import { CircleArrowRight, Heart, Map } from "lucide-react";
@@ -18,64 +23,83 @@ import GalleryFull from "@/ui-components/CountryPage/GalleryFull";
 const Country = () => {
   const { code } = useParams();
   const [countryData, setCountryData] = useState<CountryDetails | null>(null);
-  const [name, setName] = useState('')
+  const [name, setName] = useState("");
   const [countryImage, setImage] = useState<CountryImage | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   const [isOpen, setOpen] = useState(false);
 
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
   const favorites = useSelector(
-    (state: RootState) => state.favorites.favorites
+    (state: RootState) => state.favorites.favorites,
   );
 
-  const countryId = countryData?.code && countryData.code !== "N/A" ? countryData.code : countryData?.name || "";
+  const countryId =
+    countryData?.code && countryData.code !== "N/A"
+      ? countryData.code
+      : countryData?.name || "";
   const isLiked = favorites.includes(countryId);
 
   useEffect(() => {
-    const fetchCountryData = async () => {
+    const fetchData = async () => {
       if (!code) return;
+
       setLoading(true);
+
       try {
         throw console.error();
-        
+
         const data = await getCountryDetails(code);
+
         setCountryData(data);
-        setName(data.name);
+
+        try {
+          const image = await getCountryImage(data.name);
+          setImage(image);
+        } catch (imageError) {
+          console.error("Error fetching country image:", imageError);
+        }
       } catch (error) {
         console.error("Error fetching country data:", error);
-        console.log('Falling to backup..')
-        toast.warning('Loading Backup...')
 
-        const rawBackup = (CountryData as Record<string, RawCountryDetails>)[code.toUpperCase()];
+        toast.warning("Loading Backup...");
+
+        const rawBackup = (CountryData as Record<string, RawCountryDetails>)[
+          code.toUpperCase()
+        ];
+
         if (rawBackup) {
           const backupCountryData = mapRawToCountryDetails(rawBackup);
-          setCountryData(backupCountryData);
-          setName(backupCountryData.name);
-        }
 
+          setCountryData(backupCountryData);
+
+          try {
+            const image = await getCountryImage(backupCountryData.name);
+
+            setImage(image);
+          } catch (imageError) {
+            console.error("Error fetching backup image:", imageError);
+          }
+        }
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchCountryData();
+    fetchData();
   }, [code]);
 
   useEffect(() => {
-    const fetchImage = async () => {
-      if (!name) return; 
-      try {
-        const image = await getCountryImage(name);
-        setImage(image);
-      } catch (error) {
-        console.error("Error fetching country image:", error);
-      } finally {
-        setLoading(false); 
-      }
-    };
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
 
-    fetchImage();
-  }, [name]);
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
 
   const handleLike = () => {
     if (!countryData) return;
@@ -221,7 +245,10 @@ const Country = () => {
               isOpen ? "flex" : "hidden"
             } items-center justify-center p-4`}
           >
-            <div className="absolute inset-0 bg-black/40" onDoubleClick={()=>setOpen(false)} />
+            <div
+              className="absolute inset-0 bg-black/40"
+              onDoubleClick={() => setOpen(false)}
+            />
 
             <GalleryFull name={countryData?.name} setOpen={setOpen} />
           </div>

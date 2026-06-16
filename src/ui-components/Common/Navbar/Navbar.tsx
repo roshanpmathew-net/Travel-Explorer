@@ -22,11 +22,17 @@ const navItems = [
   },
   {
     id: 3,
+    name: "destinations",
+    link: "/globe",
+  },
+  
+  {
+    id: 4,
     name: "compare",
     link: "/compare",
   },
   {
-    id: 4,
+    id: 5,
     name: "plans",
     link: "/plans",
   },
