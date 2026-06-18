@@ -1,12 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 export interface User {
   name: string;
   img_url: string | null;
   islogged: boolean;
   isAdmin: boolean;
+  email: string
 }
 
 interface AuthContextType {

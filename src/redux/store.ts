@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import languageReducer from "./langSlice";
 import favoriteReducer from "./favoritesSlice";
+import recentActivityReducer from "./recentActivitySlice"
 
 import {
   persistStore,
@@ -29,6 +30,14 @@ const languagePersistConfig = {
   timeout: 0, 
 };
 
+const recentAcivityPersistConfig = {
+  key: "recentActivity",
+  storage: persistStorage,
+  timeout: 0
+}
+
+
+
 const persistedFavoritesReducer = persistReducer(
   favoritesPersistConfig,
   favoriteReducer
@@ -39,10 +48,15 @@ const persistedLanguageReducer = persistReducer(
   languageReducer
 );
 
+const persistedRecentActivityReducer = persistReducer(
+  recentAcivityPersistConfig, recentActivityReducer
+)
+
 export const store = configureStore({
   reducer: {
     language: persistedLanguageReducer,
     favorites: persistedFavoritesReducer,
+    recentActivity: persistedRecentActivityReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

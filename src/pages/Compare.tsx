@@ -60,7 +60,7 @@ const Compare = () => {
           <div className="absolute inset-0 bg-[url('/images/Compare.jpg')] bg-cover bg-center" />
           <div className="absolute inset-0 bg-linear-to-b from-blue-900/20 via-blue-500/10 to-white/40 dark:from-slate-900/80 dark:via-slate-900/60 dark:to-slate-950/90" />
 
-          <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center pt-4 sm:pt-0">
+          <div className="hidden sm:flex relative z-10  h-full flex-col items-center justify-center px-4 text-center pt-4 sm:pt-0">
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
               Compare Countries
             </h1>

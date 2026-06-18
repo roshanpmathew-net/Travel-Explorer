@@ -13,13 +13,12 @@ interface PexelsPhoto {
 
 const PEXELS_AUTH = import.meta.env.VITE_PEXELS_API_KEY;
 
-export const getCountryImage = async (name: string): Promise<CountryImage> => {
+export const getImage = async (name: string): Promise<CountryImage> => {
   try {
     const res = await fetch(
       `https://api.pexels.com/v1/search?query=${encodeURIComponent(
         `${name} landmarks`,
-      )}&per_page=1&orientation=landscape`,
-
+      )}&per_page=5&orientation=landscape`,
       {
         headers: {
           Authorization: PEXELS_AUTH,
@@ -28,26 +27,29 @@ export const getCountryImage = async (name: string): Promise<CountryImage> => {
     );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch Image details");
+      throw new Error("Failed to fetch image details");
     }
+
     const data = await res.json();
 
-    const image = (data.photos as PexelsPhoto[])?.[0];
+    const photos = data.photos as PexelsPhoto[];
 
-    if (!image) {
-      throw new Error("No image found");
+    if (!photos?.length) {
+      throw new Error("No images found");
     }
 
+    const randomIndex = Math.floor(Math.random() * photos.length);
+    const randomImage = photos[randomIndex];
+
     return {
-      src: image.src.landscape,
-      alt: image.alt,
+      src: randomImage.src.landscape,
+      alt: randomImage.alt,
     };
   } catch (e) {
-    console.error("Error fetching country details:", e);
+    console.error("Error fetching image:", e);
     throw e;
   }
 };
-
 export const getImages = async (
   name: string,
   limit: number,

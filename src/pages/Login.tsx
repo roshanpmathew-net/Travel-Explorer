@@ -11,6 +11,7 @@ interface GoogleUser {
   name: string;
   email: string;
   picture: string;
+  
 }
 
 const Login = () => {
@@ -27,7 +28,8 @@ const Login = () => {
       name: decoded.name,
       img_url: decoded.picture || null,
       islogged: true,
-      isAdmin:true
+      isAdmin:true,
+      email: decoded.email
     });
     }
     else{
@@ -35,7 +37,8 @@ const Login = () => {
       name: decoded.name,
       img_url: decoded.picture || null,
       islogged: true,
-      isAdmin:false
+      isAdmin:false,
+      email: decoded.email
     });
     }
 

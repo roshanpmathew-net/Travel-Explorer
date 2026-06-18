@@ -9,21 +9,22 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { toggleFavorite } from "@/redux/favoritesSlice";
-import { getCountryImage, type CountryImage } from "@/services/Image";
+import { getImage, type CountryImage } from "@/services/Image";
 import CountryData from "../data/CountryDetails.json";
 import Loader from "@/ui-components/Common/Loader";
 import { Button } from "@base-ui/react/button";
 import { CircleArrowRight, Heart, Map } from "lucide-react";
 import CountryDet from "@/ui-components/ExplorePage/Country_Det";
 import ImageGallery from "@/ui-components/CountryPage/Image_Gallery";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 import GalleryFull from "@/ui-components/CountryPage/GalleryFull";
+
+import { recordActivity } from "@/redux/recentActivitySlice";
 
 const Country = () => {
   const { code } = useParams();
   const [countryData, setCountryData] = useState<CountryDetails | null>(null);
-  const [name, setName] = useState("");
   const [countryImage, setImage] = useState<CountryImage | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -47,14 +48,21 @@ const Country = () => {
       setLoading(true);
 
       try {
-        throw console.error();
+        // throw console.error();
 
         const data = await getCountryDetails(code);
 
         setCountryData(data);
+        dispatch(
+          recordActivity({
+            id: Date.now(),
+            activity: `Viewed ${data.name}`,
+            time: new Date().toISOString(),
+          }),
+        );
 
         try {
-          const image = await getCountryImage(data.name);
+          const image = await getImage(data.name);
           setImage(image);
         } catch (imageError) {
           console.error("Error fetching country image:", imageError);
@@ -63,7 +71,6 @@ const Country = () => {
         console.error("Error fetching country data:", error);
 
         toast.warning("Loading Backup...");
-
         const rawBackup = (CountryData as Record<string, RawCountryDetails>)[
           code.toUpperCase()
         ];
@@ -72,9 +79,16 @@ const Country = () => {
           const backupCountryData = mapRawToCountryDetails(rawBackup);
 
           setCountryData(backupCountryData);
+          dispatch(
+            recordActivity({
+              id: Date.now(),
+              activity: `Viewed ${backupCountryData.name}`,
+              time: new Date().toISOString(),
+            }),
+          );
 
           try {
-            const image = await getCountryImage(backupCountryData.name);
+            const image = await getImage(backupCountryData.name);
 
             setImage(image);
           } catch (imageError) {
@@ -102,13 +116,32 @@ const Country = () => {
   }, [isOpen]);
 
   const handleLike = () => {
-    if (!countryData) return;
-    dispatch(toggleFavorite(countryId));
+    // if (!countryData) return;
+
+    
+
     if (isLiked) {
       toast.success("Removed from favorites");
+
+      dispatch(
+        recordActivity({
+          id: Date.now(),
+          activity: `Removed ${countryData!.name} from Favorites`,
+          time: new Date().toISOString(),
+        }),
+      );
     } else {
       toast.success("Added to favorites");
+
+      dispatch(
+        recordActivity({
+          id: Date.now(),
+          activity: `Added ${countryData!.name} to Favorites`,
+          time: new Date().toISOString()
+        }),
+      );
     }
+    dispatch(toggleFavorite(countryId))
   };
 
   return loading ? (
@@ -246,7 +279,7 @@ const Country = () => {
             } items-center justify-center p-4`}
           >
             <div
-              className="absolute inset-0 bg-black/40"
+              className="absolute inset-0 bg-black/40 backdrop-blur-md"
               onDoubleClick={() => setOpen(false)}
             />
 

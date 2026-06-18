@@ -37,7 +37,7 @@ const FilterBox = ({
 
   return (
     <div className="flex flex-col gap-4 text-slate-800 dark:text-slate-200">
-      <p className="text-1xl font-semibold text-slate-900 dark:text-slate-50">
+      <p className="hidden md:block text-1xl font-semibold text-slate-900 dark:text-slate-50">
         Filters
       </p>
       <div>

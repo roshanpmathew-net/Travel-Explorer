@@ -9,7 +9,7 @@ import CountryData from "../data/CountryDetails.json";
 
 import { Grid2x2, List } from "lucide-react";
 import CountryList from "@/ui-components/ExplorePage/Country_List";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import Loader from "@/ui-components/Common/Loader";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
@@ -27,56 +27,52 @@ const Favorites = () => {
 
   const favCodes = useSelector((state: RootState) => state.favorites.favorites);
 
-  if(user)
-  {
-     useEffect(() => {
-    const fetchFavs = async () => {
-      if (!favCodes || favCodes.length === 0) {
-        setCountries([]);
-        setLoading(false);
-        return;
-      }
-      setLoading(true);
-      try {
-        throw console.error();
+  if (user) {
+    useEffect(() => {
+      const fetchFavs = async () => {
+        if (!favCodes || favCodes.length === 0) {
+          setCountries([]);
+          setLoading(false);
+          return;
+        }
+        setLoading(true);
+        try {
+          // throw console.error();
 
-        const data = await Promise.all(
-          favCodes.map((code) => getCountryDetails(code)),
-        );
-        setCountries(data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching favorites details:", error);
-        toast.warning("Loading Backup...");
-        const backup = favCodes
-          .map((code) => {
-            const item = (CountryData as Record<string, RawCountryDetails>)[
-              code.toUpperCase()
-            ];
-            if (!item) return null;
-            return {
-              name: item.names?.common ?? "N/A",
-              capital: item.capitals?.[0]?.name ?? "N/A",
-              population: item.population ?? 0,
-              continent: item.continents?.[0] ?? "N/A",
-              code: item.codes?.alpha_3 ?? "N/A",
-              languages:
-                item.languages?.map((lang) => lang.name).join(", ") ?? "N/A",
-              flag: item.flag?.url_png || item.flag?.url_svg || "",
-            };
-          })
-          .filter((country): country is Country => country !== null);
-        setCountries(backup);
-        setLoading(false);
-      }
-    };
+          const data = await Promise.all(
+            favCodes.map((code) => getCountryDetails(code)),
+          );
+          setCountries(data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching favorites details:", error);
+          toast.warning("Loading Backup...");
+          const backup = favCodes
+            .map((code) => {
+              const item = (CountryData as Record<string, RawCountryDetails>)[
+                code.toUpperCase()
+              ];
+              if (!item) return null;
+              return {
+                name: item.names?.common ?? "N/A",
+                capital: item.capitals?.[0]?.name ?? "N/A",
+                population: item.population ?? 0,
+                continent: item.continents?.[0] ?? "N/A",
+                code: item.codes?.alpha_3 ?? "N/A",
+                languages:
+                  item.languages?.map((lang) => lang.name).join(", ") ?? "N/A",
+                flag: item.flag?.url_png || item.flag?.url_svg || "",
+              };
+            })
+            .filter((country): country is Country => country !== null);
+          setCountries(backup);
+          setLoading(false);
+        }
+      };
 
-    fetchFavs();
-  }, [favCodes]);
-
+      fetchFavs();
+    }, [favCodes]);
   }
-
- 
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -85,12 +81,17 @@ const Favorites = () => {
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
             Favorites
           </h1>
-          <p className={`hidden ${user && "text-gray-500 mt-1" }`}>
-            {countries.length} saved destinations
-          </p>
+
+          {!loading && (
+            <p className={`${user ? "text-gray-500 mt-1" : "hidden"}`}>
+              {countries.length} saved destinations
+            </p>
+          )}
         </div>
 
-        <div className={`hidden ${ user && "flex gap-2 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl"}`}>
+        <div
+          className={`${user ? "flex gap-2 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl" : "hidden"}`}
+        >
           <CustomButton
             active={view === "grid"}
             onClick={() => setView("grid")}
@@ -126,13 +127,13 @@ const Favorites = () => {
           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden">
             {countries.length > 0 ? (
               <>
-                <div className="grid grid-cols-[120px_2fr_140px_140px_300px_60px] gap-6 px-5 py-4 border-b border-gray-200 dark:border-slate-800 text-sm font-semibold text-gray-500">
+                <div className="hidden lg:grid grid-cols-[100px_2fr_120px_120px_220px_40px] gap-6 px-5 py-3 text-slate-400 dark:text-slate-500 font-semibold text-xs uppercase tracking-wider">
                   <div>Flag</div>
                   <div>Country</div>
                   <div>Capital</div>
                   <div>Population</div>
                   <div>Language</div>
-                  <div></div>
+                  <div className="text-center">Fav</div>
                 </div>
 
                 {countries.map((country) => (

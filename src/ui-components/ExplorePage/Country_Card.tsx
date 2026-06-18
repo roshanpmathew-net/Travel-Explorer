@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { toggleFavorite } from "@/redux/favoritesSlice";
+import { recordActivity } from "@/redux/recentActivitySlice";
+import { toast } from "sonner";
+
 
 interface CountryCardProps {
   item: Country;
@@ -13,12 +16,39 @@ const CountryCard = ({ item }: CountryCardProps) => {
   const nav = useNavigate();
   const countryId = item.code && item.code !== "N/A" ? item.code : item.name;
 
+  
+
   const dispatch = useDispatch<AppDispatch>()
   const favorites = useSelector(
     (state: RootState) => state.favorites.favorites
   );
 
   const isLiked = favorites.includes(countryId);
+
+   const handleLike = () => {
+      console.log("Clicked: ",item.name)
+      if (isLiked) {
+        toast.success("Removed from favorites");
+        dispatch(
+          recordActivity({
+            id: Date.now(),
+            activity: `Removed ${item.name} from Favorites`,
+            time: new Date().toISOString(),
+          }),
+        );
+      } else {
+        toast.success("Added to favorites");
+  
+        dispatch(
+          recordActivity({
+            id: Date.now(),
+            activity: `Added ${item.name} to Favorites`,
+            time: new Date().toISOString(),
+          }),
+        );
+      }
+      dispatch(toggleFavorite(countryId))
+    };
 
  
   return (
@@ -31,10 +61,8 @@ const CountryCard = ({ item }: CountryCardProps) => {
         />
 
         <button
-          onClick={() =>
-          dispatch(toggleFavorite(countryId))
-        }
-          className="absolute cursor-pointer top-3 right-3 w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center"
+          onClick={handleLike}
+          className="absolute cursor-pointer top-3 right-3 w-10 h-10 rounded-xl bg-black/30 backdrop-blur-md flex items-center justify-center"
         >
           <Heart
             className={`w-5  h-5 ${isLiked ? "text-red-800 fill-red-800" : "text-white"}`}

@@ -6,17 +6,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginDropDown = () => {
-const { user, logout } = useAuth();
-const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-const handleLogout = () => {
-  logout();
-  navigate("/");
-};
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
   return (
     <div>
       <DropdownMenu>
@@ -34,20 +33,26 @@ const handleLogout = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuGroup>
+            {user?.isAdmin && (
+              <Link to={"/admin"}>
+                <DropdownMenuItem className={"cursor-pointer"}>
+                  Admin Panel
+                </DropdownMenuItem>
+              </Link>
+            )}
 
-            {
-              user?.isAdmin && (
-                <DropdownMenuItem>
-                <a href="/admin">Admin Panel</a>
-               </DropdownMenuItem>
-              )
-            }
-            
-            <DropdownMenuItem>
-                <a href="/profile">Profile</a>
-            </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" className={'cursor-pointer'} onClick={handleLogout}>
-                Logout
+            <Link to={"/profile"}>
+              <DropdownMenuItem className={"cursor-pointer"}>
+                Profile
+              </DropdownMenuItem>
+            </Link>
+
+            <DropdownMenuItem
+              variant="destructive"
+              className={"cursor-pointer"}
+              onClick={handleLogout}
+            >
+              Logout
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

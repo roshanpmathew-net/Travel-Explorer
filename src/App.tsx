@@ -11,8 +11,7 @@ import Layout from "./layouts/Layout";
 import Plans from "./pages/Plans";
 import AdminPage from "./pages/AdminPage";
 import { useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "@/components/ui/sonner";
 import type { RootState } from "./redux/store";
 import Destination from "./pages/Destination";
 import Globe from "./pages/Globe";
@@ -29,31 +28,22 @@ function App() {
 
   return (
     <>
-      <>
-        <ToastContainer
-          position="bottom-right"
-          autoClose={3000}
-          newestOnTop
-          pauseOnHover
-          draggable
-          theme="dark"
-        />
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/profile" element={<Profile />} />
+      <Toaster position="top-right" />
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/profile" element={<Profile />} />
             <Route path="/country/:code" element={<Country />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/globe" element={<Globe />} />
             <Route path="/compare" element={<Compare />} />
             <Route path="/plans" element={<Plans />} />
-            <Route path="/destination/:name" element={<Destination />} />
-          </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={<AdminPage />} />
-        </Routes>
-      </>
+          <Route path="/destination/:name" element={<Destination />} />
+        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/admin" element={<AdminPage />} />
+      </Routes>
     </>
   );
 }

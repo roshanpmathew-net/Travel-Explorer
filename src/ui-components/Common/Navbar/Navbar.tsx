@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 import { useTheme } from "../../../context/ThemeContext";
@@ -43,9 +43,38 @@ const Navbar = () => {
   const { t } = useTranslation();
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
+  const { pathname } = useLocation();
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [isNearTop, setIsNearTop] = useState(false);
+
+  const isGlobePage = pathname === "/globe";
+
+  useEffect(() => {
+    if (!isGlobePage) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (e.clientY < 40) {
+        setIsNearTop(true);
+      } else {
+        setIsNearTop(false);
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [isGlobePage]);
+
+  const showNavbar = !isGlobePage || isHovered || isNearTop || isOpen;
 
   return (
-    <nav className="mb-5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950 transition-colors">
+    <nav
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`fixed top-0 left-0 right-0 z-50 border-b border-gray-100 dark:border-slate-800 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md transition-all duration-300 transform ${
+        showNavbar ? "translate-y-0" : "-translate-y-full max-md:translate-y-0"
+      }`}
+    >
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex gap-10">
           <Link
@@ -166,9 +195,9 @@ const Navbar = () => {
             ))}
           </ul>
 
-          <Link to="/login" onClick={() => setIsOpen(false)}>
-            <Button className="mt-4 w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white">
-              {t("login")}
+          <Link to="/profile" onClick={() => setIsOpen(false)}>
+            <Button className="mt-4 w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white cursor-pointer">
+              Profile
             </Button>
           </Link>
         </div>

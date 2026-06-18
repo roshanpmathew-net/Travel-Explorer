@@ -1,5 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
+// import { toast } from "sonner";
+
+
 
 interface FavoritesState {
   favorites: string[];
@@ -21,10 +23,10 @@ const favoritesSlice = createSlice({
         state.favorites = state.favorites.filter(
         (fav) => fav !== code
         );
-        toast.success("Removed from Favorites");
+        // toast.success("Removed from Favorites");
     } else {
         state.favorites.push(code);
-        toast.success("Added to Favorites");
+        // toast.success("Added to Favorites");
 
     }
     },
