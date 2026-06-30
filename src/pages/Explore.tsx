@@ -186,7 +186,7 @@ const Explore = () => {
       ) : (
         <div className="flex flex-col w-full gap-5">
           <div className="flex flex-row justify-between items-center">
-            <p className="text-xl sm:text-2xl font-bold">Explore {length} Countries</p>
+            <p className="text-xl sm:text-2xl font-bold">Explore {sortedCountries.length <= 0 ? ("") : sortedCountries.length } Countries</p>
             <div className="flex flex-row gap-3 text-center">
               <CustomButton
                 active={view === "grid"}

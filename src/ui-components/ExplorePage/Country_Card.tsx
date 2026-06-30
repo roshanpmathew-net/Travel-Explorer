@@ -62,10 +62,10 @@ const CountryCard = ({ item }: CountryCardProps) => {
 
         <button
           onClick={handleLike}
-          className="absolute cursor-pointer top-3 right-3 w-10 h-10 rounded-xl bg-black/30 backdrop-blur-md flex items-center justify-center"
+          className="absolute cursor-pointer top-3 right-3 w-10 h-10 rounded-xl bg-black backdrop-blur-md flex items-center justify-center"
         >
           <Heart
-            className={`w-5  h-5 ${isLiked ? "text-red-800 fill-red-800" : "text-white"}`}
+            className={`w-5   h-5 ${isLiked ? "text-red-800 fill-red-800" : "text-white"}`}
           />
         </button>
       </div>

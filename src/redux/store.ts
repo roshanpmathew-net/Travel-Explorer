@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import languageReducer from "./langSlice";
 import favoriteReducer from "./favoritesSlice";
 import recentActivityReducer from "./recentActivitySlice"
+import tourPackageReducer from "./tourSlice"
 
 import {
   persistStore,
@@ -35,6 +36,11 @@ const recentAcivityPersistConfig = {
   storage: persistStorage,
   timeout: 0
 }
+const tourPackagePersistConfig = {
+  key: "tourPackage",
+  storage: persistStorage,
+  timeout: 0
+}
 
 
 
@@ -51,12 +57,16 @@ const persistedLanguageReducer = persistReducer(
 const persistedRecentActivityReducer = persistReducer(
   recentAcivityPersistConfig, recentActivityReducer
 )
+const persistedTourPackageReducer = persistReducer(
+  tourPackagePersistConfig, tourPackageReducer
+)
 
 export const store = configureStore({
   reducer: {
     language: persistedLanguageReducer,
     favorites: persistedFavoritesReducer,
-    recentActivity: persistedRecentActivityReducer
+    recentActivity: persistedRecentActivityReducer,
+    tourPackage: persistedTourPackageReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

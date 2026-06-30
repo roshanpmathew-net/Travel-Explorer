@@ -28,7 +28,7 @@ const Profile = () => {
           <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
             <div className="-mt-12 sm:-mt-14 lg:-mt-16">
               <img
-                src={user?.img_url || "/images/user.webp"}
+                src={user?.img_url || "./images/user.webp"}
                 alt={user?.name}
                 className="h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 rounded-full border-4 border-white object-cover shadow-lg"
               />
